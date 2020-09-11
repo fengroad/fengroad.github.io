@@ -1,0 +1,722 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>力扣刷题总结 | Feng</title><meta name="description" content="分类2.滑动窗口3.无重复字符的最长子串【题目】 【注意点】： 1.是子串而不是子序列，子串是连续的字符。2.初始窗口为一个字符，left&#x3D;0,right&#x3D;1，right为新字符。3.用s[right]遍历窗口元素判有无重复。 无重复，则更新最大长度，并right右移；有重复，窗口左边界left更新为k+1。 3.快慢指针通过控制指针不同的移动速度（比如在环形链表上），这种算法证明了他们肯定会相遇"><meta name="author" content="feng"><meta name="copyright" content="feng"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="dns-prefetch" href="https://fonts.googleapis.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="dns-prefetch" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="力扣刷题总结"><meta name="twitter:description" content="分类2.滑动窗口3.无重复字符的最长子串【题目】 【注意点】： 1.是子串而不是子序列，子串是连续的字符。2.初始窗口为一个字符，left&#x3D;0,right&#x3D;1，right为新字符。3.用s[right]遍历窗口元素判有无重复。 无重复，则更新最大长度，并right右移；有重复，窗口左边界left更新为k+1。 3.快慢指针通过控制指针不同的移动速度（比如在环形链表上），这种算法证明了他们肯定会相遇"><meta name="twitter:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><meta property="og:type" content="article"><meta property="og:title" content="力扣刷题总结"><meta property="og:url" content="http://yoursite.com/2020/09/05/leetcode_sum/"><meta property="og:site_name" content="Feng"><meta property="og:description" content="分类2.滑动窗口3.无重复字符的最长子串【题目】 【注意点】： 1.是子串而不是子序列，子串是连续的字符。2.初始窗口为一个字符，left&#x3D;0,right&#x3D;1，right为新字符。3.用s[right]遍历窗口元素判有无重复。 无重复，则更新最大长度，并right右移；有重复，窗口左边界left更新为k+1。 3.快慢指针通过控制指针不同的移动速度（比如在环形链表上），这种算法证明了他们肯定会相遇"><meta property="og:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><meta property="article:published_time" content="2020-09-05T06:17:16.206Z"><meta property="article:modified_time" content="2020-09-05T03:29:44.000Z"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '1'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="http://yoursite.com/2020/09/05/leetcode_sum/"><link rel="prev" title="排序算法总结" href="http://yoursite.com/2020/09/11/sort_sum/"><link rel="next" title="blog_create" href="http://yoursite.com/2020/09/05/blog_create/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":1,"translateDelay":0,"cookieDomain":"https://fengroad.github.io/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> 清单</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> 电影</span></a></li></ul></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分类"><span class="toc-number">1.</span> <span class="toc-text">分类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-滑动窗口"><span class="toc-number">1.1.</span> <span class="toc-text">2.滑动窗口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-无重复字符的最长子串"><span class="toc-number">1.1.1.</span> <span class="toc-text">3.无重复字符的最长子串</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-快慢指针"><span class="toc-number">1.2.</span> <span class="toc-text">3.快慢指针</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用快慢指针的问题类型："><span class="toc-number">1.2.1.</span> <span class="toc-text">使用快慢指针的问题类型：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#题目"><span class="toc-number">1.2.2.</span> <span class="toc-text">题目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-环形链表–141：判断链表是否有环"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">1. 环形链表–141：判断链表是否有环</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-环形链表二–142：返回链表开始入环的第一个节点。"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">2. 环形链表二–142：返回链表开始入环的第一个节点。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-快乐数–202："><span class="toc-number">1.2.2.3.</span> <span class="toc-text">3. 快乐数–202：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-区间合并"><span class="toc-number">1.3.</span> <span class="toc-text">4.区间合并</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#怎么识别啥时候用合并区间模式呀？"><span class="toc-number">1.3.0.1.</span> <span class="toc-text">怎么识别啥时候用合并区间模式呀？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#题目-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">题目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-合并区间（56题）"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">1. 合并区间（56题）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-插入区间-57"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">2.插入区间(57)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#算法："><span class="toc-number">1.3.1.2.1.</span> <span class="toc-text">算法：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-循环排序"><span class="toc-number">1.4.</span> <span class="toc-text">5.循环排序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#算法"><span class="toc-number">1.4.0.1.</span> <span class="toc-text">算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#题目-2"><span class="toc-number">1.4.0.2.</span> <span class="toc-text">题目</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#How-to-identify"><span class="toc-number">1.4.0.3.</span> <span class="toc-text">How to identify?</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-反转链表"><span class="toc-number">1.5.</span> <span class="toc-text">6.反转链表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#题目-3"><span class="toc-number">1.5.0.1.</span> <span class="toc-text">题目</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-树的BFS"><span class="toc-number">1.6.</span> <span class="toc-text">7.树的BFS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#题目-4"><span class="toc-number">1.6.0.1.</span> <span class="toc-text">题目</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#102-二叉数的层序遍历"><span class="toc-number">1.6.0.1.1.</span> <span class="toc-text">- 102.二叉数的层序遍历</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-Z字形变换"><span class="toc-number">1.6.0.1.2.</span> <span class="toc-text">- 6. Z字形变换</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#103-二叉树的锯齿形层次遍历"><span class="toc-number">1.6.0.1.3.</span> <span class="toc-text">103. 二叉树的锯齿形层次遍历</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#637-二叉树的层平均值"><span class="toc-number">1.6.0.1.4.</span> <span class="toc-text">637. 二叉树的层平均值</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-树的DFS"><span class="toc-number">1.7.</span> <span class="toc-text">8.树的DFS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#题目-5"><span class="toc-number">1.7.1.</span> <span class="toc-text">题目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-路径总和-112"><span class="toc-number">1.7.1.1.</span> <span class="toc-text">1. 路径总和-112</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#思路："><span class="toc-number">1.7.1.1.1.</span> <span class="toc-text">思路：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-路径总和二-113"><span class="toc-number">1.7.1.2.</span> <span class="toc-text">2.路径总和二-113</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-双堆：2-heaps"><span class="toc-number">1.8.</span> <span class="toc-text">9.双堆：2-heaps</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#9-1-解释"><span class="toc-number">1.8.0.1.</span> <span class="toc-text">9,1 解释</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-2-判断双堆模式："><span class="toc-number">1.8.0.2.</span> <span class="toc-text">9.2. 判断双堆模式：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-3-题目"><span class="toc-number">1.8.0.3.</span> <span class="toc-text">9.3. 题目</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-找数据流的中位数"><span class="toc-number">1.8.0.3.1.</span> <span class="toc-text">1.找数据流的中位数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-滑动窗口中位数"><span class="toc-number">1.8.0.3.2.</span> <span class="toc-text">2.滑动窗口中位数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-IPO"><span class="toc-number">1.8.0.3.3.</span> <span class="toc-text">3.IPO</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-排列组合子集类型：回溯算法"><span class="toc-number">1.9.</span> <span class="toc-text">10 排列组合子集类型：回溯算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-1-判断"><span class="toc-number">1.9.1.</span> <span class="toc-text">10.1 判断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-题目"><span class="toc-number">1.9.2.</span> <span class="toc-text">10.2 题目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-subsets"><span class="toc-number">1.9.2.1.</span> <span class="toc-text">1. subsets</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-全排列"><span class="toc-number">1.9.2.2.</span> <span class="toc-text">2.全排列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#22-括号生成"><span class="toc-number">1.9.2.3.</span> <span class="toc-text">22.括号生成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#79-单词搜索"><span class="toc-number">1.9.2.4.</span> <span class="toc-text">79.单词搜索</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-二分搜索的变式"><span class="toc-number">1.10.</span> <span class="toc-text">11 二分搜索的变式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-题目"><span class="toc-number">1.10.0.1.</span> <span class="toc-text">2. 题目</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-前k个元素"><span class="toc-number">1.11.</span> <span class="toc-text">12 前k个元素</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#题目："><span class="toc-number">1.11.1.</span> <span class="toc-text">题目：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-数组中第k大的元素-215"><span class="toc-number">1.11.1.1.</span> <span class="toc-text">1.数组中第k大的元素-215</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-二叉搜索树种第k小的元素"><span class="toc-number">1.11.1.2.</span> <span class="toc-text">2 二叉搜索树种第k小的元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-前k个高频元素"><span class="toc-number">1.11.1.3.</span> <span class="toc-text">3 前k个高频元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-根据字符出现频率排序"><span class="toc-number">1.11.1.4.</span> <span class="toc-text">4 根据字符出现频率排序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-找到k个最接近的元素"><span class="toc-number">1.11.1.5.</span> <span class="toc-text">5 找到k个最接近的元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-前K个高频单词"><span class="toc-number">1.11.1.6.</span> <span class="toc-text">6.前K个高频单词</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-多路归并-K-way-merge"><span class="toc-number">1.12.</span> <span class="toc-text">13 多路归并 K-way merge</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#题目：-1"><span class="toc-number">1.12.1.</span> <span class="toc-text">题目：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、-合并两个有序链表"><span class="toc-number">1.12.1.1.</span> <span class="toc-text">1、 合并两个有序链表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、-合并k个排序链表"><span class="toc-number">1.12.1.2.</span> <span class="toc-text">2、 合并k个排序链表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、查找和最小的K对数字"><span class="toc-number">1.12.1.3.</span> <span class="toc-text">3、查找和最小的K对数字</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-动态规划-0-1背包类型"><span class="toc-number">1.13.</span> <span class="toc-text">14 动态规划 0&#x2F;1背包类型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#每日题目"><span class="toc-number">2.</span> <span class="toc-text">每日题目</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#红黑树"><span class="toc-number">2.1.</span> <span class="toc-text">红黑树</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#红黑树增、删节点时的自平衡"><span class="toc-number">2.1.1.</span> <span class="toc-text">红黑树增、删节点时的自平衡</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-新增节点A位于树根，无父节点"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">1.新增节点A位于树根，无父节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-新增节点B的父节点为黑色"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">2.新增节点B的父节点为黑色</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-新增节点D的父节点和叔叔节点都是红色"><span class="toc-number">2.1.1.3.</span> <span class="toc-text">3.新增节点D的父节点和叔叔节点都是红色</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-新节点D的父节点为红色，叔叔节点是黑色或没有叔叔，且新节点是父节点的右孩子，父节点B是祖父节点的左孩子。"><span class="toc-number">2.1.1.4.</span> <span class="toc-text">4.新节点D的父节点为红色，叔叔节点是黑色或没有叔叔，且新节点是父节点的右孩子，父节点B是祖父节点的左孩子。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-新节点的父节点使红色，且叔叔节点为黑色或没有叔叔。且新节点是父节点的左孩子、父节点B为祖父的左孩子。"><span class="toc-number">2.1.1.5.</span> <span class="toc-text">5.新节点的父节点使红色，且叔叔节点为黑色或没有叔叔。且新节点是父节点的左孩子、父节点B为祖父的左孩子。</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#动态规划"><span class="toc-number">2.2.</span> <span class="toc-text">动态规划</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-摆动序列"><span class="toc-number">2.2.0.1.</span> <span class="toc-text">1.摆动序列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-不同路径Ⅱ"><span class="toc-number">2.2.0.2.</span> <span class="toc-text">2. 不同路径Ⅱ</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-跳跃游戏"><span class="toc-number">2.2.0.3.</span> <span class="toc-text">3.跳跃游戏</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#91-解码方法1"><span class="toc-number">2.2.0.4.</span> <span class="toc-text">91.解码方法1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#121-买卖股票的最佳时机"><span class="toc-number">2.2.0.5.</span> <span class="toc-text">121.买卖股票的最佳时机</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#题目介绍："><span class="toc-number">2.2.0.5.1.</span> <span class="toc-text">题目介绍：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#解法："><span class="toc-number">2.2.0.5.2.</span> <span class="toc-text">解法：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#122-买卖股票的最佳时机Ⅱ"><span class="toc-number">2.2.0.6.</span> <span class="toc-text">122.买卖股票的最佳时机Ⅱ</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#解法：-1"><span class="toc-number">2.2.0.6.1.</span> <span class="toc-text">解法：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#买卖股票的最佳时机含冷冻期"><span class="toc-number">2.2.0.7.</span> <span class="toc-text">买卖股票的最佳时机含冷冻期</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#买卖股票的最佳时机含手续费"><span class="toc-number">2.2.0.8.</span> <span class="toc-text">买卖股票的最佳时机含手续费</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1143-最长公共子序列"><span class="toc-number">2.2.0.9.</span> <span class="toc-text">1143.最长公共子序列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#不同的二叉搜索树"><span class="toc-number">2.2.0.10.</span> <span class="toc-text">不同的二叉搜索树</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#97-交错字符串"><span class="toc-number">2.2.0.11.</span> <span class="toc-text">97. 交错字符串</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#prim算法求最小生成树"><span class="toc-number">2.3.</span> <span class="toc-text">prim算法求最小生成树</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#位运算"><span class="toc-number">2.4.</span> <span class="toc-text">位运算</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#剑指offer"><span class="toc-number">2.4.1.</span> <span class="toc-text">剑指offer</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#二进制中1的个数"><span class="toc-number">2.4.1.1.</span> <span class="toc-text">二进制中1的个数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#字符串"><span class="toc-number">2.5.</span> <span class="toc-text">字符串</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#剑指offer中的题"><span class="toc-number">2.5.1.</span> <span class="toc-text">剑指offer中的题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-替换空格"><span class="toc-number">2.5.1.1.</span> <span class="toc-text">1.替换空格</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LC的分类"><span class="toc-number">2.5.2.</span> <span class="toc-text">LC的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#151-翻转字符串里的单词"><span class="toc-number">2.5.2.1.</span> <span class="toc-text">151. 翻转字符串里的单词</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1096-花括号展开-II"><span class="toc-number">2.5.2.2.</span> <span class="toc-text">1096. 花括号展开 II</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#58-最后一个单词的长度"><span class="toc-number">2.5.2.3.</span> <span class="toc-text">58. 最后一个单词的长度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#468-验证IP地址"><span class="toc-number">2.5.2.4.</span> <span class="toc-text">468. 验证IP地址</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-字符串转换整数-atoi"><span class="toc-number">2.5.2.5.</span> <span class="toc-text">8. 字符串转换整数 (atoi)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1487-保证文件名唯一"><span class="toc-number">2.5.2.6.</span> <span class="toc-text">1487. 保证文件名唯一</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删除子文件夹"><span class="toc-number">2.5.2.7.</span> <span class="toc-text">删除子文件夹</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#415-字符串相加"><span class="toc-number">2.5.2.8.</span> <span class="toc-text">415.字符串相加</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#125-验证回文串"><span class="toc-number">2.5.2.9.</span> <span class="toc-text">125.验证回文串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#131-分割回文串"><span class="toc-number">2.5.2.10.</span> <span class="toc-text">131.分割回文串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#单词拆分"><span class="toc-number">2.5.2.11.</span> <span class="toc-text">单词拆分</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#单词拆分Ⅱ"><span class="toc-number">2.5.2.12.</span> <span class="toc-text">单词拆分Ⅱ</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#17-17-多次搜索：【字典树】"><span class="toc-number">2.6.</span> <span class="toc-text">17.17 多次搜索：【字典树】</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#【字典树trie】的构造"><span class="toc-number">2.6.0.1.</span> <span class="toc-text">【字典树trie】的构造</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#由此引出的类的构造与实例化方法："><span class="toc-number">2.6.0.1.1.</span> <span class="toc-text">由此引出的类的构造与实例化方法：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14-最长公共前缀"><span class="toc-number">2.6.0.2.</span> <span class="toc-text">14.最长公共前缀</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数组"><span class="toc-number">2.7.</span> <span class="toc-text">数组</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1170-比较字符串最小字母出现频次"><span class="toc-number">2.7.0.1.</span> <span class="toc-text">1170. 比较字符串最小字母出现频次</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#拓扑排序"><span class="toc-number">2.8.</span> <span class="toc-text">拓扑排序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#207-课程表"><span class="toc-number">2.8.0.1.</span> <span class="toc-text">207.课程表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#210-课程表2"><span class="toc-number">2.8.0.2.</span> <span class="toc-text">210.课程表2</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#堆、栈、队列"><span class="toc-number">2.9.</span> <span class="toc-text">堆、栈、队列</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#题目-6"><span class="toc-number">2.9.1.</span> <span class="toc-text">题目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#最小栈"><span class="toc-number">2.9.1.1.</span> <span class="toc-text">最小栈</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数组中第k大元素"><span class="toc-number">2.9.1.2.</span> <span class="toc-text">数组中第k大元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据流的中位数"><span class="toc-number">2.9.1.3.</span> <span class="toc-text">数据流的中位数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#有序矩阵中第K小的元素"><span class="toc-number">2.9.1.4.</span> <span class="toc-text">有序矩阵中第K小的元素</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#滑动窗口最大值（队列）"><span class="toc-number">2.9.1.5.</span> <span class="toc-text">滑动窗口最大值（队列）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#基本计算器Ⅱ-栈"><span class="toc-number">2.9.1.6.</span> <span class="toc-text">基本计算器Ⅱ (栈)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#扁平化嵌套列表迭代器（栈）"><span class="toc-number">2.9.1.7.</span> <span class="toc-text">扁平化嵌套列表迭代器（栈）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#逆波兰表达式求值（栈）"><span class="toc-number">2.9.1.8.</span> <span class="toc-text">逆波兰表达式求值（栈）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#链表"><span class="toc-number">2.10.</span> <span class="toc-text">链表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#题目-7"><span class="toc-number">2.10.1.</span> <span class="toc-text">题目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#复制带随机指针的链表"><span class="toc-number">2.10.1.1.</span> <span class="toc-text">复制带随机指针的链表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#排序链表"><span class="toc-number">2.10.1.2.</span> <span class="toc-text">排序链表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#回文链表"><span class="toc-number">2.10.1.3.</span> <span class="toc-text">回文链表</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LRU缓存机制"><span class="toc-number">2.11.</span> <span class="toc-text">LRU缓存机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#题目-8"><span class="toc-number">2.11.1.</span> <span class="toc-text">题目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#146-LRU缓存机制-（双向链表）"><span class="toc-number">2.11.1.1.</span> <span class="toc-text">146.LRU缓存机制    （双向链表）</span></a></li></ol></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Feng</a></span><span class="pull_right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> 清单</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> 电影</span></a></li></ul></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">力扣刷题总结</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-09-05 14:17:16"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2020-09-05</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-09-05 11:29:44"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-09-05</span></time></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h1><h2 id="2-滑动窗口"><a href="#2-滑动窗口" class="headerlink" title="2.滑动窗口"></a>2.滑动窗口</h2><h3 id="3-无重复字符的最长子串"><a href="#3-无重复字符的最长子串" class="headerlink" title="3.无重复字符的最长子串"></a>3.无重复字符的最长子串</h3><p><a href="https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/" target="_blank" rel="noopener">【题目】</a></p>
+<p>【注意点】：</p>
+<p>1.是子串而不是子序列，子串是连续的字符。<br>2.初始窗口为一个字符，<code>left=0</code>,<code>right=1</code>，right为新字符。<br>3.用<code>s[right]</code>遍历窗口元素判有无重复。</p>
+<p>无重复，则更新最大长度，并right右移；<br>有重复，窗口左边界<code>left</code>更新为<code>k+1</code>。</p>
+<h2 id="3-快慢指针"><a href="#3-快慢指针" class="headerlink" title="3.快慢指针"></a>3.快慢指针</h2><p>通过控制指针不同的移动速度（比如在环形链表上），这种算法证明了他们肯定会相遇的。快的一个指针肯定会追上慢的一个（可以想象成跑道上面跑得快的人套圈跑得慢的人）。</p>
+<h3 id="使用快慢指针的问题类型："><a href="#使用快慢指针的问题类型：" class="headerlink" title="使用快慢指针的问题类型："></a>使用快慢指针的问题类型：</h3><ol>
+<li>需要处理环上的问题，如环形链表和环形数组</li>
+<li>需要知道链表的长度或某个特别位置的信息时  </li>
+</ol>
+<p><strong>此时用快慢指针而不用双指针：</strong><br>3. 判断链表是否为回文</p>
+<h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><h4 id="1-环形链表–141：判断链表是否有环"><a href="#1-环形链表–141：判断链表是否有环" class="headerlink" title="1. 环形链表–141：判断链表是否有环"></a>1. 环形链表–141：判断链表是否有环</h4><p><strong>算法</strong><br>两个指针都从链表头部开始，通过使用具有不同速度的快、慢两个指针遍历链表，空间复杂度可以被降低至 O(1)。慢指针每次移动一步，而快指针每次移动两步。</p>
+<p>如果列表中不存在环，最终快指针将会最先到达尾部，此时我们可以返回 false。<br>以下为两个指针起点的两种情况：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool hasCycle(ListNode *head) &#123;</span><br><span class="line">        &#x2F;&#x2F;快慢指针法不同起点：</span><br><span class="line">        if(head &#x3D;&#x3D; NULL || head-&gt;next &#x3D;&#x3D; NULL) </span><br><span class="line">            return false;   &#x2F;&#x2F;若链表为空或只有一个元素。返回false</span><br><span class="line">        ListNode *slow &#x3D; head;  &#x2F;&#x2F;不同起点</span><br><span class="line">        ListNode *fast &#x3D; head-&gt;next;</span><br><span class="line">        while(slow !&#x3D; fast)&#123;    &#x2F;&#x2F;起点不同时使用这个循环</span><br><span class="line">            if(fast &#x3D;&#x3D; NULL || fast-&gt;next &#x3D;&#x3D; NULL) </span><br><span class="line">                return false;    &#x2F;&#x2F;快指针找到了尾部</span><br><span class="line">            slow &#x3D; slow-&gt;next;</span><br><span class="line">            fast &#x3D; fast-&gt;next-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F;快慢指针相同起点</span><br><span class="line">        if(head &#x3D;&#x3D; NULL || head-&gt;next &#x3D;&#x3D; NULL) </span><br><span class="line">            return false;   &#x2F;&#x2F;若链表为空或只有一个元素。返回false</span><br><span class="line">        ListNode *slow &#x3D; head;  &#x2F;&#x2F;快慢指针 起点相同</span><br><span class="line">        ListNode *fast &#x3D; head;</span><br><span class="line">        while(fast !&#x3D; NULL &amp;&amp; fast-&gt;next !&#x3D; NULL)&#123;  &#x2F;&#x2F;此处不同</span><br><span class="line">            slow &#x3D; slow-&gt;next;</span><br><span class="line">            fast &#x3D; fast-&gt;next-&gt;next;</span><br><span class="line">            if(fast &#x3D;&#x3D; slow)</span><br><span class="line">                return true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="2-环形链表二–142：返回链表开始入环的第一个节点。"><a href="#2-环形链表二–142：返回链表开始入环的第一个节点。" class="headerlink" title="2. 环形链表二–142：返回链表开始入环的第一个节点。"></a>2. 环形链表二–142：返回链表开始入环的第一个节点。</h4><p><strong>算法：</strong><br>若快慢指针第一次相遇，但位置不一定是环起点。所以在此相遇点，令fast = head,再进行快慢循环，一定可以相遇在环起点。<br><strong>即，快慢指针在第一次相遇后，再走“非环部分长度”则一定可以相遇在环起点。</strong></p>
+<h4 id="3-快乐数–202："><a href="#3-快乐数–202：" class="headerlink" title="3. 快乐数–202："></a>3. 快乐数–202：</h4><hr>
+<h2 id="4-区间合并"><a href="#4-区间合并" class="headerlink" title="4.区间合并"></a>4.区间合并</h2><p>区间合并模式是一个用来处理有区间重叠的很高效的技术。<br><img src="https://pic4.zhimg.com/80/v2-603053309be9d035b3c8ccee773e46e7_720w.jpg" alt="image"><br>理解和识别这六种情况，灰常重要。因为这能帮你解决一大堆问题。这些问题从插入区间到优化区间合并都有。</p>
+<h4 id="怎么识别啥时候用合并区间模式呀？"><a href="#怎么识别啥时候用合并区间模式呀？" class="headerlink" title="怎么识别啥时候用合并区间模式呀？"></a>怎么识别啥时候用合并区间模式呀？</h4><ul>
+<li>当你需要产生一堆相互之间没有交集的区间的时候</li>
+<li>有关键词-重叠区间<h3 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h3><h4 id="1-合并区间（56题）"><a href="#1-合并区间（56题）" class="headerlink" title="1. 合并区间（56题）"></a><strong>1. 合并区间（56题）</strong></h4><img src="E6D18F04EB4B4C57BFE4136D613AAAFE" alt="image">  </li>
+</ul>
+<p><strong>算法：</strong><br><code>Merged</code>存储已合并区间<br> 1、先将列表区间按左端点升序排序后.<br>2、然后依次考虑每个区间。<br>    - 新区间的左端点，在<code>Merge</code>最后一个区间右端点之后，则不重合。并将此区间加入<code>Merge</code>。<br>    - 否则，重合，并将<code>Merge</code>最后一区间的右端点更新为与新区间的右端点之间的<strong>最大值</strong>。  </p>
+<h4 id="2-插入区间-57"><a href="#2-插入区间-57" class="headerlink" title="2.插入区间(57)"></a>2.插入区间(57)</h4><p>示例 1:<br>输入: intervals = [[1,3],[6,9]], newInterval = [2,5]<br>输出: [[1,5],[6,9]]<br>示例 2:<br>输入: intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]<br>输出: [[1,2],[3,10],[12,16]]<br>解释: 这是因为新的区间 [4,8] 与 [3,5],[6,7],[8,10] 重叠。</p>
+<h5 id="算法："><a href="#算法：" class="headerlink" title="算法："></a><strong>算法</strong>：</h5><p>遍历原数组，如果当前区间和新区间没有交集，则直接存入答案；<br>如果有交集，便和新区间合并，更新新区间的左右边界；<br>如果当前区间和新区间无交集且大于新区间，则新区间和后面所有的区间都可存入答案。  </p>
+<p>1.如果<code>newInterval[0] &gt; intervals[i][1]</code>，此区间和新区间无交集，直接存入答案<br>2.如果<code>newInterval[1] &lt; intervals[i][0]</code>，从此区间起，所有区间都和新区间无交集，所有区间存入答案<br>3.否则此区间和新区间有交集，合并区间<br><code>newInterval[0] = min(newInterval[0], intervals[i][0]);</code><br><code>newInterval[1] = max(newInterval[1], intervals[i][1]);</code></p>
+<p>注意：如果新区间大于所有区间，不会在循环中存入答案，所以应有一个flag记录新区间是否存入答案  </p>
+<hr>
+<h2 id="5-循环排序"><a href="#5-循环排序" class="headerlink" title="5.循环排序"></a>5.循环排序</h2><p>循环排序问题，一般是为了简化数组排序复杂度的一类问题。通过这种方式可以将数组排序的复杂度从<code>o(n^2)</code>降低到<code>o(n)</code>,甚至于<code>o(1)</code><br>另外，在排序的题目中要善于运用字典和集合去重计数的性质，降低算法的复杂度。有时候还会涉及到一些位运算。  </p>
+<p>形如：<br><img src="AA5A1D9464B34850A1C79845180BFE6C" alt="image"></p>
+<h4 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def missingNumber(self, nums: List[int]) -&gt; int:</span><br><span class="line">        start &#x3D; 0</span><br><span class="line"></span><br><span class="line">        while start &lt; len(nums):</span><br><span class="line">            num &#x3D; nums[start]</span><br><span class="line">            if num &lt; len(nums) and num !&#x3D; start:</span><br><span class="line">                nums[start], nums[num] &#x3D; nums[num], nums[start]</span><br><span class="line">            else:</span><br><span class="line">                start +&#x3D; 1</span><br><span class="line"></span><br><span class="line">        for i in range(len(nums)):</span><br><span class="line">            if nums[i] !&#x3D; i:</span><br><span class="line">                return i</span><br><span class="line"></span><br><span class="line">        return len(nums)</span><br></pre></td></tr></table></figure>
+<h4 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h4><p>LeetCode 442 - Find All Duplicates in an Array [medium]<br>LeetCode 448 - Find All Numbers Disappeared in an Array [easy]<br>LeetCode 645 - Set Mismatch [easy]  </p>
+<h4 id="How-to-identify"><a href="#How-to-identify" class="headerlink" title="How to identify?"></a>How to identify?</h4><ul>
+<li>给的一个序列，找出重复或丢失的数字时，用此排序  </li>
+<li>当涉及包含给定范围内数字的数组的问题时，考虑循环排序模式。</li>
+</ul>
+<h2 id="6-反转链表"><a href="#6-反转链表" class="headerlink" title="6.反转链表"></a>6.反转链表</h2><h4 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h4><ul>
+<li><strong>206.反转链表</strong>  </li>
+</ul>
+<p>反转一个单链表。</p>
+<p>示例:</p>
+<p>输入: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL<br>输出: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">ListNode* reverseList(ListNode* head) &#123;</span><br><span class="line">        if(head &#x3D;&#x3D; NULL || head-&gt;next &#x3D;&#x3D; NULL)&#123;</span><br><span class="line">            return head;</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode *tail &#x3D; reverseList(head-&gt;next);   &#x2F;&#x2F;先递归找到链表尾部 tail；</span><br><span class="line">        &#x2F;&#x2F;如果链表是 1-&gt;2-&gt;3-&gt;4-&gt;5，那么此时的 cur就是5，递归反转原理就是使 5-&gt;4</span><br><span class="line">		&#x2F;&#x2F;而 head是4，head的下一个是 5，下下一个是空</span><br><span class="line">		&#x2F;&#x2F;所以 head.next.next 就是 5-&gt;4</span><br><span class="line">        &#x2F;&#x2F;递归退栈下一个 head是3</span><br><span class="line">        head-&gt;next-&gt;next &#x3D; head;</span><br><span class="line">        head-&gt;next &#x3D; NULL;</span><br><span class="line">        return tail;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>92.反转链表Ⅱ</strong></li>
+</ul>
+<p>反转从位置 m 到 n 的链表。请使用一趟扫描完成反转。</p>
+<p>说明:<br>1 ≤ m ≤ n ≤ 链表长度。</p>
+<p>示例:</p>
+<p>输入: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, m = 2, n = 4<br>输出: 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;NULL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">ListNode* reverseBetween(ListNode* head, int m, int n) &#123;</span><br><span class="line">        &#x2F;&#x2F;需要设置一个哑节点dummy，因为m&#x3D;1时，我们可以也有前驱节点。</span><br><span class="line">        ListNode * dummy &#x3D; new ListNode(-1);</span><br><span class="line">        dummy-&gt;next &#x3D; head;</span><br><span class="line">        ListNode *pre &#x3D; dummy;</span><br><span class="line">        &#x2F;&#x2F;找到m处的head的前驱节点作为pre</span><br><span class="line">        for(int i &#x3D; 1; i &lt; m; ++i)</span><br><span class="line">            pre &#x3D; pre-&gt;next;</span><br><span class="line">        &#x2F;&#x2F;开始反转</span><br><span class="line">        ListNode *cur &#x3D; pre-&gt;next;</span><br><span class="line">        &#x2F;&#x2F;每次循环将nxt插入到pre后面</span><br><span class="line">        for(int i &#x3D; m; i &lt; n; ++i)&#123;</span><br><span class="line">            ListNode *nxt &#x3D; cur-&gt;next;</span><br><span class="line">            &#x2F;&#x2F;将cur 连接至nxt后面的节点</span><br><span class="line">            cur-&gt;next &#x3D; nxt-&gt;next;</span><br><span class="line">            &#x2F;&#x2F;将nxt插入到pre后面</span><br><span class="line">            nxt-&gt;next &#x3D; pre-&gt;next;</span><br><span class="line">            pre-&gt;next &#x3D; nxt;            </span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        return dummy-&gt;next;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>1190.反转每对括号间的子串</strong></li>
+</ul>
+<p>给出一个字符串 s（仅含有小写英文字母和括号）。</p>
+<p>请你按照从括号内到外的顺序，逐层反转每对匹配括号中的字符串，并返回最终的结果。</p>
+<p>注意，您的结果中 不应 包含任何括号。</p>
+<h2 id="7-树的BFS"><a href="#7-树的BFS" class="headerlink" title="7.树的BFS"></a>7.树的BFS</h2><h4 id="题目-4"><a href="#题目-4" class="headerlink" title="题目"></a>题目</h4><h5 id="102-二叉数的层序遍历"><a href="#102-二叉数的层序遍历" class="headerlink" title="- 102.二叉数的层序遍历"></a>- 102.二叉数的层序遍历</h5><p>给你一个二叉树，请你返回其按 层序遍历 得到的节点值。 （即逐层地，从左到右访问所有节点）。  </p>
+<p>示例：<br>二叉树：[3,9,20,null,null,15,7],</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  3</span><br><span class="line"> &#x2F; \</span><br><span class="line">9  20</span><br><span class="line">  &#x2F;  \</span><br><span class="line"> 15   7</span><br></pre></td></tr></table></figure>
+<p>返回其层次遍历结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  [3],</span><br><span class="line">  [9,20],</span><br><span class="line">  [15,7]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>主要步骤：  </p>
+<ul>
+<li><strong>迭代</strong>：<br>1、判断二叉树是否为空。<br>2、先将根节点插入queue，再以(!queue.empty)为条件遍历二叉树每一层：<br>a、遍历该层中每个元素：  </li>
+</ul>
+<p>1.取出队首top：queue.front()。2.队首出队，并将队首元素值存入一维数组。3.遍历top的左、右子树是否有节点？有，则插入队列末。<br>b、一位数组存入二维数组res。</p>
+<h5 id="6-Z字形变换"><a href="#6-Z字形变换" class="headerlink" title="- 6. Z字形变换"></a>- 6. Z字形变换</h5><p>方法1：<br><a href="https://leetcode-cn.com/problems/zigzag-conversion/solution/hua-jie-suan-fa-6-z-zi-xing-bian-huan-by-guanpengc/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/zigzag-conversion/solution/hua-jie-suan-fa-6-z-zi-xing-bian-huan-by-guanpengc/</a></p>
+<h5 id="103-二叉树的锯齿形层次遍历"><a href="#103-二叉树的锯齿形层次遍历" class="headerlink" title="103. 二叉树的锯齿形层次遍历"></a>103. 二叉树的锯齿形层次遍历</h5><p><img src="3717FC357E7B40248751E755346DE993" alt="image"><br>最关键的是使用<strong>双端队列</strong>遍历，可以在队列的任一端插入元素。根据每一层的访问顺序，即从左到右或从右到左，决定从双端队列的哪一端插入节点。</p>
+<ul>
+<li>另一种做法是：正常从左到右遍历，然后根据要求反转某些层节点的顺序</li>
+</ul>
+<h5 id="637-二叉树的层平均值"><a href="#637-二叉树的层平均值" class="headerlink" title="637. 二叉树的层平均值"></a>637. 二叉树的层平均值</h5><h2 id="8-树的DFS"><a href="#8-树的DFS" class="headerlink" title="8.树的DFS"></a>8.树的DFS</h2><p>可以用递归（或是显示栈，如果你想用迭代方式的话）来记录遍历过程中访问过的父节点。</p>
+<p>该模式的运行方式是从根节点开始，如果该节点不是叶子节点，我们需要干三件事：</p>
+<p>需要区别我们是先处理根节点（pre-order，前序），处理孩子节点之间处理根节点（in-order，中序），还是处理完所有孩子再处理根节点（post-order，后序）。<br>递归处理当前节点的左右孩子。</p>
+<h3 id="题目-5"><a href="#题目-5" class="headerlink" title="题目"></a>题目</h3><h4 id="1-路径总和-112"><a href="#1-路径总和-112" class="headerlink" title="1. 路径总和-112"></a>1. 路径总和-112</h4><p>示例:<br>给定如下二叉树，以及目标和 sum = 22，  </p>
+<pre><code>      5
+     / \
+    4   8
+   /   / \
+  11  13  4
+ /  \      \
+7    2      1</code></pre><p>返回 true, 因为存在目标和为 22 的根节点到叶子节点的路径 5-&gt;4-&gt;11-&gt;2。</p>
+<h5 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h5><p>//利用递归，遍历整棵树：如果当前节点不是叶子，对它的所有孩子节点，递归调用 hasPathSum 函数，<br>//其中 sum 值减去当前节点的权值；如果当前节点是叶子，检查 sum 值是否为 0，也就是是否找到了给定的目标和。</p>
+<h4 id="2-路径总和二-113"><a href="#2-路径总和二-113" class="headerlink" title="2.路径总和二-113"></a>2.路径总和二-113</h4><p>与上一题的区别是:难点是要保存<strong>所有满足和为sum的路径</strong>  </p>
+<p>示例:<br>给定如下二叉树，以及目标和 sum = 22，</p>
+<pre><code>      5
+     / \
+    4   8
+   /   / \
+  11  13  4
+ /  \    / \
+7    2  5   1</code></pre><p>返回:<br>[<br>   [5,4,11,2],<br>   [5,8,4,5]<br>]</p>
+<p>思路  </p>
+<ul>
+<li>利用一维数组temp暂存，若满足递归终止条件，则temp存入二维数组res</li>
+<li>不满足，则递归：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;递归调用：</span><br><span class="line">if(root-&gt;left)</span><br><span class="line">    dfs(root-&gt;left, sum);</span><br><span class="line">if(root-&gt;right)</span><br><span class="line">    dfs(root-&gt;right, sum);</span><br><span class="line">&#x2F;&#x2F;回溯</span><br><span class="line">temp.pop_back();</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="9-双堆：2-heaps"><a href="#9-双堆：2-heaps" class="headerlink" title="9.双堆：2-heaps"></a>9.双堆：2-heaps</h2><h4 id="9-1-解释"><a href="#9-1-解释" class="headerlink" title="9,1 解释"></a>9,1 解释</h4><p>用到两个堆。堆，即优先队列。将一半元素放到最大堆，O(1)找到最大元素；一半元素放到最小堆，O(1)找到最小元素。最后就能得到所有元素的中位数。</p>
+<h4 id="9-2-判断双堆模式："><a href="#9-2-判断双堆模式：" class="headerlink" title="9.2. 判断双堆模式："></a>9.2. 判断双堆模式：</h4><ul>
+<li>优先队列、计划安排问题</li>
+<li>找一组数的中位数/最大数/最小数</li>
+<li>二叉树中可用</li>
+</ul>
+<h4 id="9-3-题目"><a href="#9-3-题目" class="headerlink" title="9.3. 题目"></a>9.3. 题目</h4><h5 id="1-找数据流的中位数"><a href="#1-找数据流的中位数" class="headerlink" title="1.找数据流的中位数"></a>1.找数据流的中位数</h5><p>最大堆存放较小一半元素，找出堆中最大值；最小堆存放较大一半元素，找出其中最小值。根据这两个值就能得到中位数。  </p>
+<p>该题难点是<strong>平衡两个堆</strong>：<br>1.先将元素添加到最大堆，再将最大堆的最大值添加到最小堆，并在最大堆中pop这个元素。<br>2.平衡堆的元素数：如果最大堆数量小于最小堆，则将最小堆堆顶添加到最大堆。</p>
+<h5 id="2-滑动窗口中位数"><a href="#2-滑动窗口中位数" class="headerlink" title="2.滑动窗口中位数"></a>2.滑动窗口中位数</h5><p><strong>难点</strong>：窗口移动后，某些元素要移除，但在堆中删除指定元素非常复杂。<br>方法：采用<strong>延迟删除</strong>。<br>使用题1中的方法持续添加元素，并使用哈希表标记无效元素(要删除的元素)，只要两个堆是平衡的，就一定能找到中位数。但如果找到的中位数属于哈希表的无效元素，就删除这个元素。</p>
+<h5 id="3-IPO"><a href="#3-IPO" class="headerlink" title="3.IPO"></a>3.IPO</h5><h2 id="10-排列组合子集类型：回溯算法"><a href="#10-排列组合子集类型：回溯算法" class="headerlink" title="10 排列组合子集类型：回溯算法"></a>10 排列组合子集类型：回溯算法</h2><p>很多面试问题会涉及到排列组合。子集问题模式讲的时用<strong>回溯算法</strong>来处理这些问题。  </p>
+<p>主要方法：<br><a href="https://leetcode-cn.com/problems/subsets/solution/hui-su-si-xiang-tuan-mie-pai-lie-zu-he-zi-ji-wen-t/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/subsets/solution/hui-su-si-xiang-tuan-mie-pai-lie-zu-he-zi-ji-wen-t/</a>  </p>
+<img src="https://pic2.zhimg.com/80/v2-0409666e91e94287c167ef81670d19a5_720w.jpg" width=512 height=425 />  
+
+<h3 id="10-1-判断"><a href="#10-1-判断" class="headerlink" title="10.1 判断"></a>10.1 判断</h3><ul>
+<li><strong>找某组数的组合和排列</strong></li>
+</ul>
+<h3 id="10-2-题目"><a href="#10-2-题目" class="headerlink" title="10.2 题目"></a>10.2 题目</h3><h4 id="1-subsets"><a href="#1-subsets" class="headerlink" title="1. subsets"></a>1. subsets</h4><p><a href="https://leetcode-cn.com/problems/subsets/" target="_blank" rel="noopener">【题目】</a></p>
+<p>【解法】：<a href="https://leetcode-cn.com/problems/subsets/solution/hui-su-si-xiang-tuan-mie-pai-lie-zu-he-zi-ji-wen-t/" target="_blank" rel="noopener"><strong>回溯算法</strong></a>：  </p>
+<p><code>res</code>就是树上的所有节点  </p>
+<ul>
+<li>回溯算法的框架：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">result &#x3D; []</span><br><span class="line">def backtrack(路径, 选择列表):</span><br><span class="line">    if 满足结束条件:</span><br><span class="line">        result.add(路径)</span><br><span class="line">        return</span><br><span class="line">    </span><br><span class="line">    for 选择 in 选择列表:</span><br><span class="line">        做选择</span><br><span class="line">        backtrack(路径, 选择列表)</span><br><span class="line">        撤销选择</span><br></pre></td></tr></table></figure></li>
+<li><strong>其核心就是</strong>：在for循环中的递归调用之前“做选择”——树的前序遍历，在递归调用之后“撤销选择”——树回到父节点（后序遍历。就能正确得到每个节点的选择列表和路径。 </li>
+</ul>
+<img src="https://pic.leetcode-cn.com/83b914f06fefb895af2f21629087aab8168c1277c8c7b8cdfc4f7e475ee2e651.jpg" width=400 height=200 />  
+
+<p>如<code>nums=[1, 2, 3]</code>，求全排列，就是下面这颗树的所有节点：<br><img src="https://pic.leetcode-cn.com/9a8de9fcaf46ddb7bfce26071c81b98336420d066c71a8567230235fc56771ac-file_1575263193028" width=400 height=200 />  </p>
+<h4 id="2-全排列"><a href="#2-全排列" class="headerlink" title="2.全排列"></a>2.全排列</h4><p><a href="https://leetcode-cn.com/problems/permutations/" target="_blank" rel="noopener">【题目】</a></p>
+<p><a href="https://leetcode-cn.com/problems/permutations/solution/hui-su-suan-fa-xiang-jie-by-labuladong-2/" target="_blank" rel="noopener">【解法】</a></p>
+<h4 id="22-括号生成"><a href="#22-括号生成" class="headerlink" title="22.括号生成"></a>22.括号生成</h4><p><a href="https://leetcode-cn.com/problems/generate-parentheses/" target="_blank" rel="noopener">【题目】</a></p>
+<p>//利用回溯算法</p>
+<p>//如果左括号数量不大于 n，我们可以放一个左括号。如果右括号数量小于左括号的数量，我们可以放一个右括号。</p>
+<h4 id="79-单词搜索"><a href="#79-单词搜索" class="headerlink" title="79.单词搜索"></a>79.单词搜索</h4><p><a href="https://leetcode-cn.com/problems/word-search/" target="_blank" rel="noopener">【题目】</a></p>
+<ul>
+<li>怎么回溯？</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">bool dfs(vector&lt;vector&lt;char&gt;&gt;&amp; board, string&amp; word, int i, int j, int wordindex)&#123;</span><br><span class="line">    if(board[i][j] !&#x3D; word[wordindex])</span><br><span class="line">        return false;</span><br><span class="line">    if(wordindex &#x3D;&#x3D; word.size()-1)</span><br><span class="line">        return true;</span><br><span class="line">    &#x2F;&#x2F;当前位置通过，下一个位置</span><br><span class="line">    wordindex++;</span><br><span class="line">    char temp &#x3D; board[i][j];</span><br><span class="line">    board[i][j] &#x3D; 0;   &#x2F;&#x2F;防止再次访问</span><br><span class="line">    for (int d &#x3D; 0; d &lt; 4; ++d)&#123;</span><br><span class="line">        int newi &#x3D; i + dy[d];</span><br><span class="line">        int newj &#x3D; j + dx[d];</span><br><span class="line">        &#x2F;&#x2F;任意一条路走通， 就算成功</span><br><span class="line">        if(isok(newi, newj, board) &amp;&amp; dfs(board, word, newi, newj, wordindex))</span><br><span class="line">            return true;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F;都不通则回溯到上一状态</span><br><span class="line">    </span><br><span class="line">    board[i][j] &#x3D; temp;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>怎么避免走过的位置不再走？  </li>
+</ul>
+<p>提取board中当前位置的值，并置当前位置为0，要回溯时，再返回该字母。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">char temp &#x3D; board[i][j];</span><br><span class="line">board[i][j] &#x3D; 0;   &#x2F;&#x2F;防止再次访问</span><br><span class="line">...</span><br><span class="line">&#x2F;&#x2F;都不通则回溯到上一状态</span><br><span class="line">board[i][j] &#x3D; temp;</span><br><span class="line">return false;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="11-二分搜索的变式"><a href="#11-二分搜索的变式" class="headerlink" title="11 二分搜索的变式"></a>11 二分搜索的变式</h2><p>当要求从<strong>已排序</strong>的数组、链表、矩阵中，<strong>找出指定的数时</strong>，使用二分搜索。</p>
+<p>基本步骤： （假设原数组已升序）<br>mid = lo + （hi - lo）/ 2<br>如果nums[mid] == target, 直接返回mid<br>如果target &lt; nums[mid]，即target在mid的左边，则令hi = mid - 1<br>如果target &gt; nums[mid]，即target在mid右边，则令lo = mid + 1  </p>
+<h4 id="2-题目"><a href="#2-题目" class="headerlink" title="2. 题目"></a>2. 题目</h4><ol>
+<li><p><a href="https://leetcode-cn.com/problems/search-in-rotated-sorted-array/" target="_blank" rel="noopener">搜索旋转排序数组</a></p>
+</li>
+<li><p><a href="https://leetcode-cn.com/problems/search-a-2d-matrix/" target="_blank" rel="noopener">搜索二维矩阵</a></p>
+</li>
+</ol>
+<p>一个m x n的矩阵，判断是否存在目标值。<br>此矩阵每行中的整数从左到右按升序排列。每行的第一个整数大于前一行的最后一个整数。  </p>
+<p>注意点：  </p>
+<p>1.while(lo &lt;= hi) ，小于等于，因为要满足数组只有一个数时的情况，如[1],1</p>
+<ol start="3">
+<li><a href="https://leetcode-cn.com/problems/search-a-2d-matrix-ii/" target="_blank" rel="noopener">搜索二维矩阵 二</a></li>
+</ol>
+<p>形如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  [1,   4,  7, 11, 15],</span><br><span class="line">  [2,   5,  8, 12, 19],</span><br><span class="line">  [3,   6, &#x2F;9&#x2F;, 16, 22],</span><br><span class="line">  [10, 13, 14, 17, 24],</span><br><span class="line">  [18, 21, 23, 26, 30]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>每行的元素从左到右升序排列。<br>每列的元素从上到下升序排列。</p>
+<p><strong>【思路】</strong></p>
+<p>1.从左下角开始：<code>i= matix.size()-1, j = 0;</code>（或者从右上角开始）</p>
+<p>如果元素大于<code>target</code>，–i；如果元素小于<code>target</code>，++j；如果相等，返回true。</p>
+<p>2.二分搜索的变式</p>
+<p>找到矩阵的中心元素，将<code>target</code>与中心元素比较。如中心小于目标，则左上角元素丢弃。</p>
+<h2 id="12-前k个元素"><a href="#12-前k个元素" class="headerlink" title="12 前k个元素"></a>12 前k个元素</h2><p>模式识别：</p>
+<ul>
+<li>需要求最大/最小/最频繁的前K个元素</li>
+<li>需要通过排序找一个特定的数  </li>
+</ul>
+<p>【方法】：</p>
+<ul>
+<li>一般采用<strong>优先队列：最小堆、最大堆</strong>来解</li>
+</ul>
+<h3 id="题目："><a href="#题目：" class="headerlink" title="题目："></a>题目：</h3><h4 id="1-数组中第k大的元素-215"><a href="#1-数组中第k大的元素-215" class="headerlink" title="1.数组中第k大的元素-215"></a>1.数组中第k大的元素-215</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">int findKthLargest(vector&lt;int&gt;&amp; nums, int k) &#123;</span><br><span class="line">    &#x2F;&#x2F;维护一个大小为k的小顶堆，堆顶就是第k大元素</span><br><span class="line">    &#x2F;&#x2F;注意：当堆的大小达到k，需先将元素与堆顶判别，再入堆。比入堆后再pop更快</span><br><span class="line">    priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; heap;</span><br><span class="line">    for(int n: nums)&#123;</span><br><span class="line">        if(heap.size() &#x3D;&#x3D; k)&#123;</span><br><span class="line">            &#x2F;&#x2F;n比堆顶大才入堆</span><br><span class="line">            if(n &gt; heap.top())&#123;</span><br><span class="line">                heap.pop();</span><br><span class="line">                heap.push(n);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">            heap.push(n);</span><br><span class="line">    &#125;</span><br><span class="line">    return heap.top();</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-二叉搜索树种第k小的元素"><a href="#2-二叉搜索树种第k小的元素" class="headerlink" title="2 二叉搜索树种第k小的元素"></a>2 <a href="https://leetcode-cn.com/problems/kth-smallest-element-in-a-bst/" target="_blank" rel="noopener">二叉搜索树种第k小的元素</a></h4><ul>
+<li>该题涉及到<a href="https://cloud.tencent.com/developer/article/1415239" target="_blank" rel="noopener">二叉树的遍历方法</a>：</li>
+<li>法一：采用中序遍历方法，并利用find记录是否找到结果，来提前终止遍历过程。</li>
+<li>法二：利用优先队列  </li>
+</ul>
+<h4 id="3-前k个高频元素"><a href="#3-前k个高频元素" class="headerlink" title="3 前k个高频元素"></a>3 <a href="https://leetcode-cn.com/problems/top-k-frequent-elements/?utm_source=LCUS&utm_medium=ip_redirect_q_uns&utm_campaign=transfer2china" target="_blank" rel="noopener">前k个高频元素</a></h4><p>方法：</p>
+<p>先用hashmap统计每种元素出现次，<br>再维护一个大小为k的最小堆，当元素的次数大于堆顶时，才入堆。<br>最后输出最小堆的k个元素。</p>
+<h4 id="4-根据字符出现频率排序"><a href="#4-根据字符出现频率排序" class="headerlink" title="4 根据字符出现频率排序"></a>4 <a href="https://leetcode-cn.com/problems/sort-characters-by-frequency/" target="_blank" rel="noopener">根据字符出现频率排序</a></h4><ul>
+<li>法一：<strong>利用vecto自定义排序</strong>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; static bool cmp(const pair&lt;char, int&gt; &amp;a, const pair&lt;char, int&gt; &amp;b)&#123;   &#x2F;&#x2F;成员变量需为静态</span><br><span class="line">    &#x2F;&#x2F;     return a.second &gt; b.second;</span><br><span class="line">    &#x2F;&#x2F; &#125;</span><br><span class="line">string frequencySort(string s) &#123;</span><br><span class="line">    unordered_map&lt;char, int&gt; hashmap;</span><br><span class="line">    for(char &amp;c : s)&#123;</span><br><span class="line">        hashmap[c]++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F;将unorderedmap在vector中存储pair对，再用vector排序</span><br><span class="line">    vector&lt;pair&lt;char, int&gt;&gt; elems(hashmap.begin(), hashmap.end());</span><br><span class="line">    &#x2F;&#x2F; sort(elems.begin(), elems.end(), cmp);</span><br><span class="line">    sort(elems.begin(), elems.end(), [](const pair&lt;char, int&gt; &amp;p1, const pair&lt;char, int&gt; &amp;p2) &#123; return p1.second &gt; p2.second; &#125;);</span><br><span class="line">    string res;</span><br><span class="line">    for(auto v : elems)&#123;</span><br><span class="line">        &#x2F;&#x2F;添加到res字符串</span><br><span class="line">        res +&#x3D; string(v.second, v.first);</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br></pre></td></tr></table></figure>
+注意点：</li>
+</ul>
+<p><strong>1.</strong> 其中，使用<code>sort(elems.begin(), elems.end(), [](const pair&lt;char, int&gt; &amp;p1, const pair&lt;char, int&gt; &amp;p2) { return p1.second &gt; p2.second; });</code>使用[]内置函数 对pair()进行排序，不报错。但用cmp就会报错？？  </p>
+<ul>
+<li>因为<code>sort()</code>第三个参数是<strong>函数指针</strong>，而<code>cmp</code>是个非静态成员函数，非静态函数指针和普通指针 有区别；而静态函数指针与普通指针没区别，所以要将<code>cmp</code>函数定义为<code>static bool</code>。  </li>
+</ul>
+<p><strong>2.</strong> 使用string()函数进行字符添加</p>
+<ul>
+<li><strong>法二：优先队列</strong>  </li>
+</ul>
+<p>注意点：</p>
+<p>priority_queue&lt;pair&lt;int, char&gt;&gt; heap;   //int放前面</p>
+<h4 id="5-找到k个最接近的元素"><a href="#5-找到k个最接近的元素" class="headerlink" title="5 找到k个最接近的元素"></a>5 <a href="https://leetcode-cn.com/problems/find-k-closest-elements/" target="_blank" rel="noopener">找到k个最接近的元素</a></h4><h4 id="6-前K个高频单词"><a href="#6-前K个高频单词" class="headerlink" title="6.前K个高频单词"></a><a href="https://leetcode-cn.com/problems/top-k-frequent-words/" target="_blank" rel="noopener">6.前K个高频单词</a></h4><h2 id="13-多路归并-K-way-merge"><a href="#13-多路归并-K-way-merge" class="headerlink" title="13 多路归并 K-way merge"></a>13 多路归并 K-way merge</h2><p>解决涉及到多组有序数组的问题。  </p>
+<p><strong>主要方法：</strong></p>
+<p>1.先将每个数组中最小一个元素加入最小堆，得到全局最小值。<br>2.再取出此全局最小值所在数组下一个元素，加入堆。<br>3.重复上述过程</p>
+<h3 id="题目：-1"><a href="#题目：-1" class="headerlink" title="题目："></a>题目：</h3><h4 id="1、-合并两个有序链表"><a href="#1、-合并两个有序链表" class="headerlink" title="1、 合并两个有序链表"></a>1、 <a href="https://leetcode-cn.com/problems/merge-two-sorted-lists/" target="_blank" rel="noopener">合并两个有序链表</a></h4><h4 id="2、-合并k个排序链表"><a href="#2、-合并k个排序链表" class="headerlink" title="2、 合并k个排序链表"></a>2、 <a href="https://leetcode-cn.com/problems/merge-k-sorted-lists/" target="_blank" rel="noopener">合并k个排序链表</a></h4><p>解法：<br>a. <a href="https://leetcode-cn.com/problems/merge-k-sorted-lists/solution/c-you-xian-dui-lie-liang-liang-he-bing-fen-zhi-he-/" target="_blank" rel="noopener">优先队列法</a>：  </p>
+<p>其中，对元素类型为<strong>指针</strong>的小顶堆的初始化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct cmp&#123;</span><br><span class="line">    bool operator() (ListNode* a, ListNode* b)</span><br><span class="line">        return a-&gt;val &gt; b-&gt;val;</span><br><span class="line">&#125;;</span><br><span class="line">&#x2F;&#x2F;主函数中：</span><br><span class="line">priority_queue&lt;ListNode*, vector&lt;ListNode*&gt;, cmp&gt; heap;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h4 id="3、查找和最小的K对数字"><a href="#3、查找和最小的K对数字" class="headerlink" title="3、查找和最小的K对数字"></a>3、<a href="https://leetcode-cn.com/problems/find-k-pairs-with-smallest-sums/" target="_blank" rel="noopener">查找和最小的K对数字</a></h4><p>使用大顶堆：其定义如下：数据格式：(i, j)</p>
+<p><strong>大、小顶堆的选择根据</strong>：此题若用小顶堆，则每次维护时会移除堆顶的最小元素，但题目要求最小的k个元素，每次移除最小的堆顶，最后会剩下最大的k个元素，有矛盾。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">struct cmp&#123;</span><br><span class="line">    bool operator() (pair&lt;int, int&gt; &amp;a, pair&lt;int, int&gt; &amp;b)&#123;</span><br><span class="line">        &#x2F;&#x2F;使用大顶堆，来求前k小</span><br><span class="line">        &#x2F;&#x2F;如果下面的是大于号，则为小顶堆</span><br><span class="line">        return a.first + a.second &lt; b.first + b.second;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">priority_queue&lt;pair&lt;int, int&gt;, vector&lt;pair&lt;int, int&gt;&gt;, cmp&gt; maxheap;</span><br></pre></td></tr></table></figure>
+<p>注意：<br>入堆时要注意堆大小达到k时的情况<br> if(maxheap.size() == k){<br>两数和小于堆顶才入堆</p>
+<h2 id="14-动态规划-0-1背包类型"><a href="#14-动态规划-0-1背包类型" class="headerlink" title="14 动态规划 0/1背包类型"></a>14 动态规划 0/1背包类型</h2><p>背包问题：</p>
+<p>给你一个可装载重量为 W 的背包和 N 个物品，每个物品有重量和价值两个属性。其中第 i 个物品的重量为 wt[i]，价值为 val[i]，现在让你用这个背包装物品，最多能装的价值是多少？</p>
+<p>1.<a href="https://leetcode-cn.com/problems/partition-to-k-equal-sum-subsets/" target="_blank" rel="noopener">划分为k个相等的子集</a>  </p>
+<p>获取最近一次提交的代码，进行复习。  </p>
+<p><strong>注意点：</strong></p>
+<p>使用了function&lt;&gt;模板。<br>如果集合每个数的和不是k的整数倍，则不能分割。</p>
+<p>2.<a href="https://leetcode-cn.com/problems/partition-equal-subset-sum/" target="_blank" rel="noopener">分割等和子集</a>  </p>
+<p><strong>方法：</strong><br>可以将此问题转化为背包问题：</p>
+<p>即，先对集合求和<code>sum</code>，问题就是是否可以用<code>N</code>个物品恰好装满<code>sum/2</code>大小的背包，每个物品重量为<code>nums[i]</code>。</p>
+<p><a href="https://leetcode-cn.com/problems/partition-equal-subset-sum/solution/0-1-bei-bao-wen-ti-bian-ti-zhi-zi-ji-fen-ge-by-lab/" target="_blank" rel="noopener">背包问题题解</a></p>
+<h1 id="每日题目"><a href="#每日题目" class="headerlink" title="每日题目"></a>每日题目</h1><h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p><a href="https://zhuanlan.zhihu.com/p/143396578" target="_blank" rel="noopener">知乎讲解</a>  </p>
+<p>主要是为了<strong>解决二叉树多次插入新节点导致的不平衡</strong>。如下图中的插入：</p>
+<p><img src="https://pic1.zhimg.com/v2-be973682db213c5d7d66f7bea1f15010_b.jpg" alt="image"></p>
+<p>插入五个节点：7,6,5,4,3后的二叉树：</p>
+<p><img src="https://pic2.zhimg.com/v2-c9ec58139bd4158fdaa8ed808ddca2b5_b.jpg" alt="image"></p>
+<p>红黑树是一种自平衡的二叉查找树。<br>红黑树典型结构如下图：<br><img src="https://pic3.zhimg.com/80/v2-547662c1659066f06630de1e827082fa_720w.jpg" alt="image"></p>
+<p><strong>并必须具有以下5个特性：</strong>  </p>
+<p>1.结点是红色或黑色。</p>
+<p>2.根结点是黑色。</p>
+<p>3.每个叶子结点都是黑色的空结点（NIL结点）。</p>
+<p>4 每个红色结点的两个子结点都是黑色。(从每个叶子到根的所有路径上不能有两个连续的红色结点)</p>
+<p>5.从任一结点到其每个叶子的所有路径都包含相同数目的黑色结点。</p>
+<h3 id="红黑树增、删节点时的自平衡"><a href="#红黑树增、删节点时的自平衡" class="headerlink" title="红黑树增、删节点时的自平衡"></a>红黑树增、删节点时的自平衡</h3><p>增加节点时的5种情形，及平衡方法</p>
+<h4 id="1-新增节点A位于树根，无父节点"><a href="#1-新增节点A位于树根，无父节点" class="headerlink" title="1.新增节点A位于树根，无父节点"></a>1.新增节点A位于树根，无父节点</h4><p><img src="https://pic4.zhimg.com/80/v2-f66844ec5a7a02b59c52da6db10dba03_720w.png" alt="image"></p>
+<p>这种局面，直接让新结点变色为黑色，规则2得到满足。同时，黑色的根结点使得每条路径上的黑色结点数目都增加了1，所以并没有打破规则5。<br><img src="https://pic3.zhimg.com/80/v2-d4552377f39208f5d54927b3c7a7a60a_720w.jpg" alt="image"></p>
+<h4 id="2-新增节点B的父节点为黑色"><a href="#2-新增节点B的父节点为黑色" class="headerlink" title="2.新增节点B的父节点为黑色"></a>2.新增节点B的父节点为黑色</h4><p><img src="https://pic2.zhimg.com/80/v2-a64b4e366a4cd4c512a437bf87046f81_720w.png" alt="image"></p>
+<p>没有打破规则，不需要调整。</p>
+<h4 id="3-新增节点D的父节点和叔叔节点都是红色"><a href="#3-新增节点D的父节点和叔叔节点都是红色" class="headerlink" title="3.新增节点D的父节点和叔叔节点都是红色"></a>3.新增节点D的父节点和叔叔节点都是红色</h4><p><img src="https://pic1.zhimg.com/80/v2-8075b7762a193d39e99a37d40e0fc958_720w.jpg" alt="image"></p>
+<p>违反了规则4，因此先将节点B变为黑色</p>
+<p>但打破了规则5，因此让节点A变为红色。再让节点C变为黑色。<br><img src="https://pic1.zhimg.com/80/v2-99e257f356001376b49aa809c5230254_720w.jpg" alt="image"></p>
+<h4 id="4-新节点D的父节点为红色，叔叔节点是黑色或没有叔叔，且新节点是父节点的右孩子，父节点B是祖父节点的左孩子。"><a href="#4-新节点D的父节点为红色，叔叔节点是黑色或没有叔叔，且新节点是父节点的右孩子，父节点B是祖父节点的左孩子。" class="headerlink" title="4.新节点D的父节点为红色，叔叔节点是黑色或没有叔叔，且新节点是父节点的右孩子，父节点B是祖父节点的左孩子。"></a>4.新节点D的父节点为红色，叔叔节点是黑色或没有叔叔，且新节点是父节点的右孩子，父节点B是祖父节点的左孩子。</h4><p><img src="https://pic2.zhimg.com/80/v2-fabee6a45b5d247a5f24e4a103cf2691_720w.jpg" alt="image"></p>
+<p>以节点B为轴，做左旋转，使D节点为父节点，B变为D的左孩子。<br><img src="https://pic3.zhimg.com/80/v2-43fb5fb0abc36595aef56e05d5bd922a_720w.jpg" alt="image"></p>
+<p>这样一来，就进入了局面5.</p>
+<h4 id="5-新节点的父节点使红色，且叔叔节点为黑色或没有叔叔。且新节点是父节点的左孩子、父节点B为祖父的左孩子。"><a href="#5-新节点的父节点使红色，且叔叔节点为黑色或没有叔叔。且新节点是父节点的左孩子、父节点B为祖父的左孩子。" class="headerlink" title="5.新节点的父节点使红色，且叔叔节点为黑色或没有叔叔。且新节点是父节点的左孩子、父节点B为祖父的左孩子。"></a>5.新节点的父节点使红色，且叔叔节点为黑色或没有叔叔。且新节点是父节点的左孩子、父节点B为祖父的左孩子。</h4><p>需要以节点A为轴，做一次右旋转，使B替代A的位置，A成为B的右孩子：<br><img src="https://pic1.zhimg.com/80/v2-04e30ebe8a4a0608dd2a91f762d1c020_720w.jpg" alt="image"></p>
+<p>然后，让B变黑，A变红。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-3cd596451994d8871f55459bf3daf22d_720w.jpg" alt="image"></p>
+<h2 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h2><p>动态规划的题目分为两大类:</p>
+<p>一种是求<strong>最优解类</strong>，典型问题是背包问题，</p>
+<p>另一种就是<strong>计数类</strong>，比如【2.不同路径】的统计方案数的问题，它们都存在一定的递推性质。</p>
+<p>前者的递推性质还有一个名字，叫做 「最优子结构」 ——即当前问题的最优解取决于子问题的最优解，后者类似，当前问题的方案数取决于子问题的方案数。所以在遇到求方案数的问题时，我们可以往动态规划的方向考虑。</p>
+<h4 id="1-摆动序列"><a href="#1-摆动序列" class="headerlink" title="1.摆动序列"></a>1.摆动序列</h4><p>【题目】：</p>
+<p>【问题描述】：  </p>
+<p>如果一个序列的奇数项都比前一项大，偶数项都比前一项小，<br>则称为一个摆动序列。即 a[2i]&lt;a[2i-1], a[2i+1]&gt;a[2i]。<br>　　小明想知道，长度为 m，每个数都是 1 到 n 之间的正整数的摆动序列一共有多少个。<br>样例输入<br>3 4</p>
+<p>样例输出<br>14<br>样例说明</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">以下是符合要求的摆动序列：</span><br><span class="line">　　2 1 2</span><br><span class="line">　　2 1 3</span><br><span class="line">　　2 1 4</span><br><span class="line">　　3 1 2</span><br><span class="line">　　3 1 3</span><br><span class="line">　　3 1 4</span><br><span class="line">　　3 2 3</span><br><span class="line">　　3 2 4</span><br><span class="line">　　4 1 2</span><br><span class="line">　　4 1 3</span><br><span class="line">　　4 1 4</span><br><span class="line">　　4 2 3</span><br><span class="line">　　4 2 4</span><br><span class="line">　　4 3 4</span><br></pre></td></tr></table></figure>
+<p>【解法】：</p>
+<p>使用<code>dp[i][j]</code>来表示在第<code>i</code>位数选择数字<code>j</code>时，可以选择的数量。那么对于任意的<code>dp[i][j]</code>，我们可以根据题意分为两种情况，即<code>i</code>为奇数和<code>i</code>为偶数。</p>
+<p><strong>有如下两种情况</strong>：</p>
+<ul>
+<li><p>当<code>i</code>为奇数时，奇数项是要比前一项大,若选择数字<code>j</code>，则此情况下的数量为前一项比<code>j</code>小的数量之和：<br><code>dp[i-1][1] + dp[i-1][2] + ...... + dp[i-1][j-1]</code></p>
+</li>
+<li><p>当<code>i</code>为偶数时，偶数项比前一项小，若此项选择数字<code>j</code>，则此时的数量为前一项比<code>j</code>大的数量之和：<br><code>dp[i-1][j+1] + dp[i-1][j+2] + ....... + dp[i-1][n]</code></p>
+</li>
+<li><p>初始化：第一项<code>d[1][j] = 1</code></p>
+</li>
+</ul>
+<p>但以上算法复杂度为<code>O(mn^2)</code>，可以<strong>省去每次的重复累加</strong>，利用递推：</p>
+<ul>
+<li><p>将<code>dp[i][j]</code>改为：奇数时表示第<code>i</code>位数选择数字<code>&gt;=j</code>时，可选择的数量；偶数时，表示第<code>i</code>位数选择的数字<code>&lt;=j</code>时，可选择的数量。</p>
+</li>
+<li><p><code>i</code>为奇数时，<code>dp[i][j] = dp[i-1][j-1] + dp[i][j+1]</code></p>
+</li>
+<li><p><code>i</code>为偶数时，<code>dp[i][j] = dp[i-1][j+1] + dp[i][j-1]</code></p>
+</li>
+<li><p>这种表示方式时初始化，<code>dp[1][j] = n-j +1</code>;</p>
+</li>
+<li><p>用<code>i&amp;1 == 1</code>来判断奇数。</p>
+</li>
+</ul>
+<h4 id="2-不同路径Ⅱ"><a href="#2-不同路径Ⅱ" class="headerlink" title="2. 不同路径Ⅱ"></a>2. 不同路径Ⅱ</h4><p><a href="https://leetcode-cn.com/problems/unique-paths-ii/" target="_blank" rel="noopener">题目链接</a></p>
+<p>【题目】：</p>
+<p>一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。</p>
+<p>机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。</p>
+<p>现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？</p>
+<p>【解法】：</p>
+<p>使用【滚动数组思想】</p>
+<ul>
+<li>(i, j)位置只能从(i-1, j)和(i, j - 1)走到，因此【无后效性】</li>
+<li>当前问题的方案数取决于子问题的方案数。所以在遇到求方案数的问题时，我们可以往动态规划的方向考虑。</li>
+<li>因为只计算路径数量，所以结果数组只需<code>res[j] += res[j - 1]</code><h4 id="3-跳跃游戏"><a href="#3-跳跃游戏" class="headerlink" title="3.跳跃游戏"></a>3.跳跃游戏</h4><a href="https://leetcode-cn.com/problems/jump-game/" target="_blank" rel="noopener">链接</a></li>
+</ul>
+<p>示例<br>示例 1:</p>
+<p>输入: [2,3,1,1,4]<br>输出: true<br>解释: 我们可以先跳 1 步，从位置 0 到达 位置 1, 然后再从位置 1 跳 3 步到达最后一个位置。</p>
+<p>示例 2:</p>
+<p>输入: [3,2,1,0,4]<br>输出: false<br>解释: 无论怎样，你总会到达索引为 3 的位置。但该位置的最大跳跃长度是 0 ， 所以你永远不可能到达最后一个位置。</p>
+<p>解法：贪心。<br>从左至右遍历数组每个位置，更新最远单跳位置<code>farmost</code>：从该点出发，加上该位置最大步数，所到的位置。<br>如果<code>farmost</code>大于等于最右端，返回<code>true</code></p>
+<h4 id="91-解码方法1"><a href="#91-解码方法1" class="headerlink" title="91.解码方法1"></a>91.解码方法1</h4><p><a href="https://leetcode-cn.com/problems/decode-ways/" target="_blank" rel="noopener">链接</a></p>
+<p>给定一个只包含数字的非空字符串，请计算解码方法的总数。</p>
+<p>示例 1:</p>
+<p>输入: “12”<br>输出: 2<br>解释: 它可以解码为 “AB”（1 2）或者 “L”（12）。</p>
+<p>示例 2:</p>
+<p>输入: “226”<br>输出: 3<br>解释: 它可以解码为 “BZ” (2 26), “VF” (22 6), 或者 “BBF” (2 2 6) 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">int numDecodings(string s) &#123;</span><br><span class="line">    if(s[0] &#x3D;&#x3D; &#39;0&#39;) return 0;</span><br><span class="line">    </span><br><span class="line">    int pre &#x3D; 1, cur &#x3D; 1;</span><br><span class="line"></span><br><span class="line">    for(int i &#x3D; 1; i &lt; s.size(); ++i)&#123;</span><br><span class="line">        int tmp &#x3D; cur;</span><br><span class="line">        if(s[i] &#x3D;&#x3D; &#39;0&#39;)&#123;</span><br><span class="line">            if(s[i- 1] &#x3D;&#x3D; &#39;1&#39; || s[i - 1] &#x3D;&#x3D; &#39;2&#39;)   &#x2F;&#x2F;组成10或20</span><br><span class="line">                cur &#x3D; pre;</span><br><span class="line">            else</span><br><span class="line">                return 0;</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line">        else if(s[i - 1] &#x3D;&#x3D; &#39;1&#39; || (s[i -1 ] &#x3D;&#x3D; &#39;2&#39; &amp;&amp; s[i] &lt;&#x3D; &#39;6&#39; &amp;&amp; s[i] &gt;&#x3D; &#39;1&#39;) )&#123;   &#x2F;&#x2F;组成十几或二十几</span><br><span class="line">            cur +&#x3D; pre;</span><br><span class="line">        &#125;</span><br><span class="line">        pre &#x3D; tmp;</span><br><span class="line">    &#125;</span><br><span class="line">    return cur;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="121-买卖股票的最佳时机"><a href="#121-买卖股票的最佳时机" class="headerlink" title="121.买卖股票的最佳时机"></a>121.买卖股票的最佳时机</h4><p><a href="https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/solution/yi-ge-fang-fa-tuan-mie-6-dao-gu-piao-wen-ti-by-l-2/" target="_blank" rel="noopener">一个方法解股票问题</a><br><strong>基本思路</strong>就是下面题【买卖股票含冷冻期】  </p>
+<p><a href="https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/" target="_blank" rel="noopener">链接</a></p>
+<h5 id="题目介绍："><a href="#题目介绍：" class="headerlink" title="题目介绍："></a>题目介绍：</h5><p>给定一个数组，它的第<code>i</code> 个元素是一支给定股票第 <code>i</code> 天的价格。</p>
+<p>如果你最多只允许完成一笔交易（即买入和卖出一支股票一次），设计一个算法来计算你所能获取的最大利润。</p>
+<p>注意：你不能在买入股票前卖出股票。</p>
+<p><strong>示例 1</strong>:</p>
+<p>输入: <code>[7,1,5,3,6,4]</code><br>输出: <code>5</code>  </p>
+<p>解释: 在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。<br>注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。</p>
+<p><strong>示例 2</strong>:</p>
+<p>输入: [7,6,4,3,1]<br>输出: 0<br>解释: 在这种情况下, 没有交易完成, 所以最大利润为 0。</p>
+<h5 id="解法："><a href="#解法：" class="headerlink" title="解法："></a>解法：</h5><p><strong>一次遍历数组所有元素，维护一个史低价格，及当前价格减史低</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int maxProfit(vector&lt;int&gt;&amp; prices) &#123;</span><br><span class="line">    int maxdev &#x3D; 0, minprice &#x3D; 1e9;</span><br><span class="line">    for(int x : prices)&#123;</span><br><span class="line">        minprice &#x3D; min(minprice, x);</span><br><span class="line">        maxdev &#x3D; max(x - minprice, maxdev);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return maxdev;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="122-买卖股票的最佳时机Ⅱ"><a href="#122-买卖股票的最佳时机Ⅱ" class="headerlink" title="122.买卖股票的最佳时机Ⅱ"></a>122.买卖股票的最佳时机Ⅱ</h4><h5 id="解法：-1"><a href="#解法：-1" class="headerlink" title="解法："></a>解法：</h5><h4 id="买卖股票的最佳时机含冷冻期"><a href="#买卖股票的最佳时机含冷冻期" class="headerlink" title="买卖股票的最佳时机含冷冻期"></a>买卖股票的最佳时机含冷冻期</h4><p><a href="https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/" target="_blank" rel="noopener">此题链接</a></p>
+<p><strong>当天结束，可分为两种情形：</strong></p>
+<p><strong>1.手中有股</strong></p>
+<p>此时又分为两种原因：MAX(此股是前一天买的， 此股是今天买的 )。<code>max(dp[i - 1][0], dp[i -  1][2])</code></p>
+<p><strong>2.手中无股</strong></p>
+<p>又分为①今天刚卖掉。②今天什么都没干造成无股</p>
+<p>①：今天把前一天手中的股卖了。<code>dp[i-1][0] - prices[i]</code></p>
+<p>②：MAX ( 昨天卖了股今天冻结期， 今天无操作)。<code>max( dp[i - 1][1] , dp[i -1 ][2])</code></p>
+<h4 id="买卖股票的最佳时机含手续费"><a href="#买卖股票的最佳时机含手续费" class="headerlink" title="买卖股票的最佳时机含手续费"></a>买卖股票的最佳时机含手续费</h4><p><a href="https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/" target="_blank" rel="noopener">此题链接</a></p>
+<h4 id="1143-最长公共子序列"><a href="#1143-最长公共子序列" class="headerlink" title="1143.最长公共子序列"></a>1143.最长公共子序列</h4><p><a href="https://leetcode-cn.com/problems/longest-common-subsequence/" target="_blank" rel="noopener">【题目】</a></p>
+<p><strong>【解】</strong>：<br>1.dp二维矩阵，横着代表字符2，竖着代表字符1<br>2.在没有两个原字符串没有这两个相等字符基础上，加上1<br>3.字符不相等，就延续左边 或 上面  </p>
+<h4 id="不同的二叉搜索树"><a href="#不同的二叉搜索树" class="headerlink" title="不同的二叉搜索树"></a>不同的二叉搜索树</h4><p><a href="https://leetcode-cn.com/problems/unique-binary-search-trees/" target="_blank" rel="noopener">【题目】：</a></p>
+<p><img src="https://pic.leetcode-cn.com/d06f3ba7518a445b2cfafbf334c9072b44802bce347df3332edce961f413f92b-image.png" alt="image"></p>
+<p>i为节点的总数<br>左子树数量为j（j从0开始），则右子树的数量为i-j-1。</p>
+<p>用d[i]表示用i个节点构建多少种不同的BST<br>则，d[i] = d[j] * d[ i-j-1 ].<br><code>j</code>表示以i号节点作为BST根节点时，左子树的总节点数，右子树的结点总数就是<code>i-j-1</code>。</p>
+<hr>
+<h4 id="97-交错字符串"><a href="#97-交错字符串" class="headerlink" title="97. 交错字符串"></a>97. 交错字符串</h4><p><a href="https://leetcode-cn.com/problems/interleaving-string/" target="_blank" rel="noopener">【题目】</a><br>给定三个字符串 s1, s2, s3, 验证 s3 是否是由 s1 和 s2 交错组成的。</p>
+<p>示例 1:</p>
+<p>输入: s1 = “aabcc”, s2 = “dbbca”, s3 = “aadbbcbcac”<br>输出: true</p>
+<p>示例 2:</p>
+<p>输入: s1 = “aabcc”, s2 = “dbbca”, s3 = “aadbbbaccc”<br>输出: false</p>
+<p>【解法】：</p>
+<p>可以用dfs+回溯，或者动态规划，但前者会超时。</p>
+<p>【动态规划解法】：</p>
+<p>1.用一个二维dp数组<code>dp[i][j]</code>，表示s1的前i个元素，与s2 的前j个元素，能否交替组成s3的前<code>i+j-1</code>个元素。<br>2.令<code>dp[0][0] = true</code>，<code>i、j</code>从1开始表示第<code>s1[i-1]、s2[j-1]</code>个元素。因此要分<code>i&gt;0、j&gt;0</code>处理。<br>3.状态转移方程：dp[i][j] = (dp[i-1][j] &amp;&amp; s1[i-1] == s3[p]) || (dp[i][j-1] &amp;&amp; s2[j-1] == s3[p]). </p>
+<p><strong>可以理解为在继承前一状态基础上，加上这一位元素后，s3是否依然交替</strong>。<br>4.在纸上画出具体的二维数组，可以很好的理解：</p>
+<h2 id="prim算法求最小生成树"><a href="#prim算法求最小生成树" class="headerlink" title="prim算法求最小生成树"></a>prim算法求最小生成树</h2><h2 id="位运算"><a href="#位运算" class="headerlink" title="位运算"></a>位运算</h2><h3 id="剑指offer"><a href="#剑指offer" class="headerlink" title="剑指offer"></a>剑指offer</h3><h4 id="二进制中1的个数"><a href="#二进制中1的个数" class="headerlink" title="二进制中1的个数"></a>二进制中1的个数</h4><p>三种解法：</p>
+<ol>
+<li><p>若n为负数(0x80000000)会带来死循环。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">int NumberOf1(int n)&#123;</span><br><span class="line">    int count &#x3D;0;</span><br><span class="line">    while(n)&#123;</span><br><span class="line">        if(n &amp; 1)</span><br><span class="line">            count ++;</span><br><span class="line">        n &#x3D; n &gt;&gt; 1;</span><br><span class="line">    &#125;</span><br><span class="line">    return count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为0x80000000的二进制为1000 0000 0000 0000 0000 0000 0000 0000 </p>
+</li>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">int NumberOf1(int n)&#123;</span><br><span class="line">    int count &#x3D; 0;</span><br><span class="line">    unsigned int flag &#x3D; 1;</span><br><span class="line">    while(flag)&#123;</span><br><span class="line">        if(n &amp; flag)</span><br><span class="line">            count++;</span><br><span class="line">        flag &#x3D; flag &lt;&lt; 1;&#x2F;&#x2F;1左移变成2，就能判断n的次低位是否为1.</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int NumberOf1(int n)&#123;</span><br><span class="line">    int count &#x3D; 0;</span><br><span class="line">    while(n)&#123;</span><br><span class="line">        ++count;</span><br><span class="line">        n &#x3D; (n-1)&amp;n;</span><br><span class="line">    &#125;</span><br><span class="line">    return count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h3 id="剑指offer中的题"><a href="#剑指offer中的题" class="headerlink" title="剑指offer中的题"></a>剑指offer中的题</h3><h4 id="1-替换空格"><a href="#1-替换空格" class="headerlink" title="1.替换空格"></a>1.替换空格</h4><p>题目:请实现一个函数，把字符串中的每个空格替换成”%20”。例如，输入“We are happy.”, 则输出“We%20are%20happy.”。</p>
+<ul>
+<li>时间复杂度为O(n^2)的解法，还不够</li>
+<li>时间复杂度为O(n)的解法,搞定Offer就靠它了  <ul>
+<li>我们可以先遍历一次字符串，统计出字符串中空格的总数，每替换一个空格，长度增加2（%20占3个字符）。然后将原字符串加长：<code>str.resize(newlen, &#39;0&#39;)</code>:超过原有长度，后面补<code>&#39;0&#39;</code>。</li>
+<li>定义两个指针<code>p1=oldlen, p2=newlen</code>。<code>while(p1&gt;=0&amp;&amp;p2&gt;=p1)</code>循环中p1从后往前遍历str，如果是空格，则修改为%20，不是空格，则往后挪字符。</li>
+</ul>
+</li>
+</ul>
+<h3 id="LC的分类"><a href="#LC的分类" class="headerlink" title="LC的分类"></a>LC的分类</h3><h4 id="151-翻转字符串里的单词"><a href="#151-翻转字符串里的单词" class="headerlink" title="151. 翻转字符串里的单词"></a>151. 翻转字符串里的单词</h4><p><a href="https://leetcode-cn.com/problems/reverse-words-in-a-string/" target="_blank" rel="noopener">【题目】</a></p>
+<p>给定一个字符串，逐个翻转字符串中的每个单词。</p>
+<p>示例 1：</p>
+<p>输入: “the sky is blue”<br>输出: “blue is sky the”</p>
+<p>示例 2：</p>
+<p>输入: “  hello world!  “<br>输出: “world! hello”<br>解释: 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。</p>
+<p>示例 3：</p>
+<p>输入: “a good   example”<br>输出: “example good a”<br>解释: 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。</p>
+<p><a href="https://leetcode-cn.com/problems/reverse-words-in-a-string/solution/fan-zhuan-zi-fu-chuan-li-de-dan-ci-by-leetcode-sol/" target="_blank" rel="noopener">【解法1】</a></p>
+<p>对于字符串可变的语言，就不需要再额外开辟空间了，直接在字符串上原地实现。在这种情况下，反转字符和去除空格可以一起完成。</p>
+<p>1.先反转整个字符串<br> <code>reverse(s.begin(), s.end());</code><br>2.再反转字符串中每个词组（空格之间的字符）<br>3.删除末尾多余空格</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">string reverseWords(string s) &#123;</span><br><span class="line">    &#x2F;&#x2F;反转字符串</span><br><span class="line">    reverse(s.begin(), s.end());</span><br><span class="line">    int idx &#x3D; 0, end, len &#x3D; s.size();   &#x2F;&#x2F;idx表示去除多余空格后s中单词每个字符的位置</span><br><span class="line">    for(int i &#x3D; 0; i &lt; len; ++i)&#123;</span><br><span class="line">        if(s[i] !&#x3D; &#39; &#39;)&#123;</span><br><span class="line">            &#x2F;&#x2F;在每个单词后加入空格</span><br><span class="line">            if(idx !&#x3D; 0)</span><br><span class="line">                s[idx++] &#x3D; &#39; &#39;;</span><br><span class="line">            &#x2F;&#x2F;找出一个完整的单词</span><br><span class="line">            end &#x3D; i;</span><br><span class="line">            while(end &lt; len &amp;&amp; s[end] !&#x3D; &#39; &#39;)</span><br><span class="line">                s[idx++] &#x3D; s[end++];</span><br><span class="line">            &#x2F;&#x2F;反转单词</span><br><span class="line">            reverse(s.begin() + idx - (end - i), s.begin() + idx);</span><br><span class="line">            &#x2F;&#x2F;改变位置</span><br><span class="line">            i &#x3D; end;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F;删除后面的空格</span><br><span class="line">    s.erase(s.begin() + idx, s.end());</span><br><span class="line">    return s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1096-花括号展开-II"><a href="#1096-花括号展开-II" class="headerlink" title="1096. 花括号展开 II"></a>1096. 花括号展开 II</h4><p><a href="https://leetcode-cn.com/problems/brace-expansion-ii/" target="_blank" rel="noopener">【题目】</a></p>
+<p>不会</p>
+<p><a href="https://leetcode-cn.com/problems/palindrome-pairs/" target="_blank" rel="noopener">【336.回文对】</a>也不会</p>
+<h4 id="58-最后一个单词的长度"><a href="#58-最后一个单词的长度" class="headerlink" title="58. 最后一个单词的长度"></a>58. 最后一个单词的长度</h4><p><a href="https://leetcode-cn.com/problems/length-of-last-word/" target="_blank" rel="noopener">【题目】</a></p>
+<p>【解法】<br>从右向左遍历字符串，首次遇到非空格字符起开始计数，直到遇到新一个空格为止，即为末尾单词长度</p>
+<p>【注意点】<br>while(i - res &gt;= 0 &amp;&amp; s[i - res] != ‘ ‘){ //i - res &gt;= 0 要放前面先执行，因为不能有s[-1]，会数组越界</p>
+<h4 id="468-验证IP地址"><a href="#468-验证IP地址" class="headerlink" title="468. 验证IP地址"></a>468. 验证IP地址</h4><p><a href="https://leetcode-cn.com/problems/validate-ip-address/" target="_blank" rel="noopener">【题目】</a></p>
+<p>【解法】：<br>1.区分IPv4和IPv6<br>2.IPv4</p>
+<h4 id="8-字符串转换整数-atoi"><a href="#8-字符串转换整数-atoi" class="headerlink" title="8. 字符串转换整数 (atoi)"></a>8. 字符串转换整数 (atoi)</h4><p><a href="https://leetcode-cn.com/problems/string-to-integer-atoi/" target="_blank" rel="noopener">【题目】</a></p>
+<p>【注意点】：</p>
+<ol>
+<li>INI_MAX = 2147483647, INI_MIN = -2147483648。<br>假设我们的环境只能存储 32 位大小的有符号整数，那么其数值范围为 [−2^31,  2^31 − 1]。如果数值超过这个范围，请返回  INT_MAX (2^31 − 1) 或 INT_MIN (−2^31). <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if(res &gt; INI_MAX &#x2F;10 || (res &#x3D;&#x3D; INI_MAX &#x2F; 10 &amp;&amp; r &gt; 7)) </span><br><span class="line">    return flag &gt; 0 ? INI_MAX : INI_MIN;</span><br></pre></td></tr></table></figure></li>
+<li>要先判断正负</li>
+<li>int r = str[i] - ‘0’; //数字字符转为数字</li>
+<li>res = res * 10 + r;  //将多个数字字符转为数字</li>
+</ol>
+<h4 id="1487-保证文件名唯一"><a href="#1487-保证文件名唯一" class="headerlink" title="1487. 保证文件名唯一"></a>1487. 保证文件名唯一</h4><p><a href="https://leetcode-cn.com/problems/making-file-names-unique/" target="_blank" rel="noopener">【题目】</a>  </p>
+<p>用<strong>哈希表</strong>记录名字，并判重</p>
+<h4 id="删除子文件夹"><a href="#删除子文件夹" class="headerlink" title="删除子文件夹"></a>删除子文件夹</h4><h4 id="415-字符串相加"><a href="#415-字符串相加" class="headerlink" title="415.字符串相加"></a>415.字符串相加</h4><p><a href="https://leetcode-cn.com/problems/add-strings/" target="_blank" rel="noopener">【题目】</a></p>
+<p>【思路】</p>
+<p>不转化为整数， 每一个字符为一个数，直接原字符串按位相加。</p>
+<p>1.用两个变量存放两个字符串的每一位。从末位开始往前算。<br>2.<code>while(x &gt;= 0 || y &gt;= 0 || plus != 0)</code><br>3.条件语句赋每一位给两个变量：超过字符长度了则赋0.<br>4.用 <code>int plus = ans /10</code>来判断进位，如果上一位的ans 大于10，那么这一位就要加1.<br>5.最后要翻转res。</p>
+<p>妙啊</p>
+<h4 id="125-验证回文串"><a href="#125-验证回文串" class="headerlink" title="125.验证回文串"></a>125.验证回文串</h4><p><a href="https://leetcode-cn.com/problems/valid-palindrome/" target="_blank" rel="noopener">【题目】</a></p>
+<h4 id="131-分割回文串"><a href="#131-分割回文串" class="headerlink" title="131.分割回文串"></a>131.分割回文串</h4><p><a href="https://leetcode-cn.com/problems/palindrome-partitioning/" target="_blank" rel="noopener">【题目】</a></p>
+<p>【方法】：</p>
+<p>回溯算法，组合每个字符，然后判断是否回文。</p>
+<h4 id="单词拆分"><a href="#单词拆分" class="headerlink" title="单词拆分"></a>单词拆分</h4><p><a href="https://leetcode-cn.com/problems/word-break/" target="_blank" rel="noopener">【题目. 139】</a></p>
+<p>【思路】：</p>
+<p>动态规划：</p>
+<ul>
+<li>dp[i] 表示 S 的前 i 个字符能否拆分</li>
+<li>转移方程：dp[i] = dp[j] &amp;&amp; check( s[j, i-1] )</li>
+<li>用集合set存放每个子串，用<code>set.fing(str) != set.end()</code>来check</li>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if (dp[j] &amp;&amp; set.find(strsub) !&#x3D; set.end())&#123;</span><br><span class="line">    dp[i] &#x3D; true;</span><br><span class="line">    break;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>i从1开始，到<code>s.size()</code></li>
+<li>剪枝：</li>
+</ul>
+<p>j 反向遍历: <code>for(int j = i - 1; j &gt;= 0 &amp;&amp; j &gt;= i - maxlen; --j)</code></p>
+<p><code>maxlen</code>是子串的最大长度。</p>
+<h4 id="单词拆分Ⅱ"><a href="#单词拆分Ⅱ" class="headerlink" title="单词拆分Ⅱ"></a>单词拆分Ⅱ</h4><p><a href="https://leetcode-cn.com/problems/word-break-ii/" target="_blank" rel="noopener">【题目.140】</a>  </p>
+<p>输入：<br>s = “catsanddog”<br>wordDict = [“cat”, “cats”, “and”, “sand”, “dog”]<br>输出：<br>[<br>  “cats and dog”,<br>  “cat sand dog”<br>]  </p>
+<p>用空格分隔s ，输出句子，使得句子中每个单词都在worddict中。</p>
+<p>【思路】： 动态规划、回溯</p>
+<h2 id="17-17-多次搜索：【字典树】"><a href="#17-17-多次搜索：【字典树】" class="headerlink" title="17.17 多次搜索：【字典树】"></a>17.17 多次搜索：【字典树】</h2><p><a href="https://leetcode-cn.com/problems/multi-search-lcci/" target="_blank" rel="noopener">【题目】</a></p>
+<p>输入：<br>big = “mississippi”<br>smalls = [“is”,”ppi”,”hi”,”sis”,”i”,”ssippi”]<br>输出： [[1,4],[8],[],[3],[1,4,7,10],[5]]<br>解释：“is”出现 big 字符串的第1位和第4位。后面同理</p>
+<p><a href="https://www.cnblogs.com/hyfhaha/p/10802604.html" target="_blank" rel="noopener"><strong>【AC自动机讲解】</strong></a></p>
+<h4 id="【字典树trie】的构造"><a href="#【字典树trie】的构造" class="headerlink" title="【字典树trie】的构造"></a>【字典树trie】的构造</h4><p><a href="https://leetcode-cn.com/problems/implement-trie-prefix-tree/" target="_blank" rel="noopener">【题目：208.实现Trie(前缀树)】</a></p>
+<p><a href="https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/trie-tree-de-shi-xian-gua-he-chu-xue-zhe-by-huwt/" target="_blank" rel="noopener">【讲解】</a>：</p>
+<ul>
+<li>实现一个字典树，包含<code>insert</code>，<code>search</code>，<code>startsWith</code>三个操作</li>
+</ul>
+<p>此题是用指针来表示下一个字符的链接<code>Trie *next[26]</code></p>
+<p>想象以下，包含三个单词”sea”,”sells”,”she”的 Trie 会长啥样呢？</p>
+<p>它的真实情况是这样的：<br>数据可视化：<br><img src="https://pic.leetcode-cn.com/e3c98484881bd654daa8419bcb0791a2b6f8288b58ef50df70ddaeefc4084f48-file_1575215107950" alt="image"></p>
+<p><strong>【注意点】</strong>：</p>
+<p>1.<code>Trie *tr = new Trie()</code>新建一个字典树的节点。<br>2.Trie()是初始化函数<br>3.search()中直接<code>node = node-&gt;next[c - &#39;a&#39;];</code> 到一个字符的数组，如果为空，则不是字典树中的单词。<br>4.search()中， 最后返回<code>return node-&gt;isEnd;</code>会更简洁。<br>5.以下为3中构造方式：</p>
+<h5 id="由此引出的类的构造与实例化方法："><a href="#由此引出的类的构造与实例化方法：" class="headerlink" title="由此引出的类的构造与实例化方法："></a>由此引出的类的构造与实例化方法：</h5><ul>
+<li>类的构造函数：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class Trie&#123;</span><br><span class="line"></span><br><span class="line">bool isEnd;     &#x2F;&#x2F;是否是完整单词</span><br><span class="line">Trie* next[26];     &#x2F;&#x2F;当前节点的下一个可能出现的所有字符的链接</span><br><span class="line"></span><br><span class="line">Trie() &#123;    &#x2F;&#x2F;初始化函数</span><br><span class="line">    isEnd &#x3D; false; </span><br><span class="line">    memset(next, 0, sizeof(next));</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">Trie *node &#x3D; this; 表示根节点</span><br><span class="line">node-&gt;next[c - &#39;a&#39;] &#x3D; new Trie(); 新建一个节点</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;如何实例化</span><br><span class="line">int main()&#123;</span><br><span class="line">    Trie *obj &#x3D; new Trie();</span><br><span class="line">    obj-&gt;insert(word);</span><br><span class="line">    ...&#125;</span><br></pre></td></tr></table></figure></li>
+<li>结构体的构造方式：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">struct Node&#123;</span><br><span class="line">    int isEnd;</span><br><span class="line">    Node *next[26] &#x3D; &#123;0&#125;;</span><br><span class="line">    Node(bool val) &#123;isEnd &#x3D; val&#125;;</span><br><span class="line">&#125;;</span><br><span class="line">Trie()&#123;</span><br><span class="line">    root &#x3D; new Node(false);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">Node *node &#x3D; root; 表示根节点。</span><br><span class="line">node-&gt;next[c - &#39;a&#39;] &#x3D; new Node(false); 新建一个节点</span><br></pre></td></tr></table></figure>
+
+
+
+
+</li>
+</ul>
+<ul>
+<li>用数组实现字典树：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">struct kkk&#123;</span><br><span class="line">    int son[27],cnt;</span><br><span class="line">    bool flag;</span><br><span class="line">&#125;trie[maxn];</span><br><span class="line"></span><br><span class="line">void insert(string s)&#123;</span><br><span class="line">    int cnt &#x3D; 1;</span><br><span class="line">    int u &#x3D; 1, len &#x3D; s.size();  &#x2F;&#x2F;u为编号，根节点的编号是0</span><br><span class="line">    for(int i &#x3D; 0; i &lt; len; ++i)&#123;</span><br><span class="line">        int v &#x3D; s[i] - &#39;a&#39;;     &#x2F;&#x2F;当前字符在26个字母中的序号</span><br><span class="line">        if( !trie[u].son[v])</span><br><span class="line">            trie[u].son[v] &#x3D; ++cnt;&#x2F;&#x2F;子节点的编号</span><br><span class="line">        u &#x3D; trie[u].son[v];</span><br><span class="line">    &#125;</span><br><span class="line">    trie[u].flag &#x3D; true;    &#x2F;&#x2F;标记此处是个单词</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><img src="https://img2020.cnblogs.com/blog/1593693/202005/1593693-20200516230446086-779182765.png" alt="trie"><br>如果此时big = “ABCDBC”，用big在trie上匹配，开始会经过2、3、4号点，在4号点的flag 有值，成功匹配了一个small串，没有子节点了，这是又要从根节点重新开始匹配吗？</p>
+<p>这样效率太低，所以要借助KMP的思想，从trie上某个点继续匹配。明显这颗树种，4号失败了，可以从7号开始匹配，所以4指向7就是一个<strong>fail指针</strong>。</p>
+<p>但4号为什么不指向9号？fail指的节点的<strong>深度尽量大</strong>。</p>
+<h4 id="14-最长公共前缀"><a href="#14-最长公共前缀" class="headerlink" title="14.最长公共前缀"></a>14.最长公共前缀</h4><p><a href="https://leetcode-cn.com/problems/longest-common-prefix/" target="_blank" rel="noopener">【题目】</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">string longestCommonPrefix(vector&lt;string&gt;&amp; strs) &#123;</span><br><span class="line">        if(strs.size() &#x3D;&#x3D; 0)    return &quot;&quot;;</span><br><span class="line">        &#x2F;&#x2F;排序就解决大部分判断</span><br><span class="line">        sort(strs.begin(), strs.end());</span><br><span class="line">        string res, str0 &#x3D; strs[0];</span><br><span class="line">        </span><br><span class="line">        for(int i &#x3D; 0; i &lt; strs[0].size(); ++i)&#123;</span><br><span class="line">            char c &#x3D; strs[0][i];</span><br><span class="line">            for(int j &#x3D; 1; j &lt; strs.size(); ++j)&#123;</span><br><span class="line">                if(strs[j][i] !&#x3D; c)</span><br><span class="line">                    return string(str0, 0, i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return str0;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><h4 id="1170-比较字符串最小字母出现频次"><a href="#1170-比较字符串最小字母出现频次" class="headerlink" title="1170. 比较字符串最小字母出现频次"></a>1170. 比较字符串最小字母出现频次</h4><p><a href="https://leetcode-cn.com/problems/compare-strings-by-frequency-of-the-smallest-character/" target="_blank" rel="noopener">【题目】</a></p>
+<h2 id="拓扑排序"><a href="#拓扑排序" class="headerlink" title="拓扑排序"></a>拓扑排序</h2><p>对于图 G 中的任意一条有向边 (u, v)，u 在排列中都出现在 v 的前面。那么该排列是拓扑排序。</p>
+<h4 id="207-课程表"><a href="#207-课程表" class="headerlink" title="207.课程表"></a>207.课程表</h4><p><a href="https://leetcode-cn.com/problems/course-schedule/" target="_blank" rel="noopener">【题目】</a>  </p>
+<ul>
+<li>找环</li>
+<li>输入的prerequisites数组格式为 [课程号，前置课程号]</li>
+<li>将节点标记为0，1，2.分别表示未搜索、搜索到、已完成。</li>
+</ul>
+<h4 id="210-课程表2"><a href="#210-课程表2" class="headerlink" title="210.课程表2"></a>210.课程表2</h4><p><a href="https://leetcode-cn.com/problems/course-schedule-ii/" target="_blank" rel="noopener">【题目】</a></p>
+<ul>
+<li>需要在<code>visit[u]=2</code>时记录<code>u</code>节点。</li>
+<li>DFS版的模板：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">bool valid &#x3D; true;&#x2F;&#x2F; 判断有向图中是否有环</span><br><span class="line">vector&lt;int&gt; visited;&#x2F;&#x2F; 标记每个节点的状态：0&#x3D;未搜索，1&#x3D;搜索中，2&#x3D;已完成</span><br><span class="line">vector&lt;vector&lt;int&gt;&gt; edge;&#x2F;&#x2F; 存储有向图</span><br><span class="line">vector&lt;int&gt; res;</span><br><span class="line">void dfs(int u)&#123;</span><br><span class="line">    visited[u] &#x3D; 1;</span><br><span class="line">    for(int v: edge[u]) &#123;</span><br><span class="line">        if(visited[v] &#x3D;&#x3D; 0)&#123;</span><br><span class="line">            dfs(v);</span><br><span class="line">            if(!valid)</span><br><span class="line">                return;</span><br><span class="line">        &#125;</span><br><span class="line">        if (visited[v] &#x3D;&#x3D; 1)&#123;</span><br><span class="line">            valid &#x3D; false;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    visited[u] &#x3D; 2;</span><br><span class="line">    res.push_back(u);</span><br><span class="line">&#125;   </span><br><span class="line">vector&lt;int&gt; findOrder(int numCourses, vector&lt;vector&lt;int&gt;&gt;&amp; prerequisites) &#123;</span><br><span class="line">    &#x2F;&#x2F;写入图</span><br><span class="line">    visited.resize(numCourses);</span><br><span class="line">    edge.resize(numCourses);</span><br><span class="line">    for(auto info : prerequisites)&#123;</span><br><span class="line">        edge[info[1]].push_back(info[0]);   &#x2F;&#x2F;因此要反着输入</span><br><span class="line">    &#125;</span><br><span class="line">    for (int i &#x3D; 0; i &lt; numCourses; ++i) &#123;</span><br><span class="line">        if( !visited[i])</span><br><span class="line">            dfs(i);</span><br><span class="line">        if( !valid)</span><br><span class="line">            return &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    reverse(res.begin(), res.end());    &#x2F;&#x2F;因为是递归最深处添加到res的，所以真实顺序要反转</span><br><span class="line">    return res;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>BFS的模板：</li>
+<li>需要用入度，来判断环。为什么dfs的valid不能用？<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">private:</span><br><span class="line">    &#x2F;&#x2F; 存储有向图</span><br><span class="line">    vector&lt;vector&lt;int&gt;&gt; edges;</span><br><span class="line">    &#x2F;&#x2F; 存储每个节点的入度</span><br><span class="line">    vector&lt;int&gt; indeg;</span><br><span class="line">    &#x2F;&#x2F; 存储答案</span><br><span class="line">    vector&lt;int&gt; result;</span><br><span class="line"></span><br><span class="line">public:</span><br><span class="line">    vector&lt;int&gt; findOrder(int numCourses, vector&lt;vector&lt;int&gt;&gt;&amp; prerequisites) &#123;</span><br><span class="line">        edges.resize(numCourses);</span><br><span class="line">        indeg.resize(numCourses);</span><br><span class="line">        for (const auto&amp; info: prerequisites) &#123;</span><br><span class="line">            edges[info[1]].push_back(info[0]);</span><br><span class="line">            ++indeg[info[0]];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        queue&lt;int&gt; q;</span><br><span class="line">        &#x2F;&#x2F; 将所有入度为 0 的节点放入队列中</span><br><span class="line">        for (int i &#x3D; 0; i &lt; numCourses; ++i) &#123;</span><br><span class="line">            if (indeg[i] &#x3D;&#x3D; 0) &#123;</span><br><span class="line">                q.push(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        while (!q.empty()) &#123;</span><br><span class="line">            &#x2F;&#x2F; 从队首取出一个节点</span><br><span class="line">            int u &#x3D; q.front();</span><br><span class="line">            q.pop();</span><br><span class="line">            &#x2F;&#x2F; 放入答案中</span><br><span class="line">            result.push_back(u);</span><br><span class="line">            for (int v: edges[u]) &#123;</span><br><span class="line">                --indeg[v];</span><br><span class="line">                &#x2F;&#x2F; 如果相邻节点 v 的入度为 0，就可以选 v 对应的课程了</span><br><span class="line">                if (indeg[v] &#x3D;&#x3D; 0) &#123;</span><br><span class="line">                    q.push(v);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (result.size() !&#x3D; numCourses) &#123;</span><br><span class="line">            return &#123;&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="堆、栈、队列"><a href="#堆、栈、队列" class="headerlink" title="堆、栈、队列"></a>堆、栈、队列</h2><h3 id="题目-6"><a href="#题目-6" class="headerlink" title="题目"></a>题目</h3><h4 id="最小栈"><a href="#最小栈" class="headerlink" title="最小栈"></a>最小栈</h4><p><a href="https://leetcode-cn.com/problems/min-stack" target="_blank" rel="noopener">【题目】</a></p>
+<p>【思路】</p>
+<ul>
+<li>计算栈内最小值时，最初是想到是每次push时都用变量存储依次：<code>minNum = min(minNum, x);</code>,但若栈顶元素<code>pop</code>掉最小元素，而<code>minNum</code>却不会变。</li>
+<li>所以栈内元素改用元组<code>pair(x,x2)</code>，x2为插入当前元组后，当前栈的最小值。</li>
+<li>或者可以用辅助栈<code>minstack</code>：<br><code>push</code>时加上：<code>minstack_.push((minstack_.empty() || x &lt; minstack_.top()) ? x : minstack_.top());</code><br><code>pop</code>时加上：minstack_.pop();</li>
+</ul>
+<h4 id="数组中第k大元素"><a href="#数组中第k大元素" class="headerlink" title="数组中第k大元素"></a>数组中第k大元素</h4><h4 id="数据流的中位数"><a href="#数据流的中位数" class="headerlink" title="数据流的中位数"></a>数据流的中位数</h4><ul>
+<li>用双堆，见上方第9节<h4 id="有序矩阵中第K小的元素"><a href="#有序矩阵中第K小的元素" class="headerlink" title="有序矩阵中第K小的元素"></a>有序矩阵中第K小的元素</h4><a href="https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/" target="_blank" rel="noopener">【题目】</a><br>【示例：】<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">matrix &#x3D; [</span><br><span class="line">   [ 1,  5,  9],</span><br><span class="line">   [10, 11, 13],</span><br><span class="line">   [12, 13, 15]</span><br><span class="line">],</span><br><span class="line">k &#x3D; 6,</span><br></pre></td></tr></table></figure>
+返回 12。</li>
+</ul>
+<p>【思路】：</p>
+<p><strong>【二分查找】：</strong></p>
+<ol>
+<li>利用矩阵有序的性质，假定一个中值<code>mid = (1 + 15) /2= 8</code></li>
+<li>拿这个<code>mid</code>，从左下角开始对比（check）矩阵元素：<br>取mid= 8， 矩阵就被分成了两块：<br><img src="https://assets.leetcode-cn.com/solution-static/378/378_fig3.png" alt="image"></li>
+</ol>
+<p>如上图，沿着锯齿线走一遍就能统计出矩阵中不大于<code>mid</code>的数的个数。</p>
+<p>check部分的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;计算矩阵中有多少数不大于mid，如果数量大于等于k，返回true；否则返回false</span><br><span class="line">bool check(vector&lt;vector&lt;int&gt;&gt;&amp; matrix, int k, int mid, int n)&#123;</span><br><span class="line">    &#x2F;&#x2F;从矩阵左下角开始</span><br><span class="line">    int i &#x3D; n, j &#x3D; 0, num &#x3D; 0;</span><br><span class="line">    while(i &gt;&#x3D; 0 &amp;&amp; j &lt;&#x3D; n)&#123;</span><br><span class="line">        if(matrix[i][j] &gt; mid)  &#x2F;&#x2F;大于mid，则往上一行</span><br><span class="line">            i--;</span><br><span class="line">        else &#123;      &#x2F;&#x2F;不大于mid，则统计此列数量，并右移一位</span><br><span class="line">            num +&#x3D; i + 1;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return num &gt;&#x3D; k;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>根据<code>check</code>结果移动左边界<code>(left)</code>、右边界<code>(right)</code>: </li>
+</ol>
+<ul>
+<li>如果数量不小于k，说明最终答案 x 不大于 mid（mid大了），所以右边界<code>right = mid</code></li>
+<li>如果数量小于k，说明最终答案 x 大于 mid（mid小了），则左边界右移<code>left = mid +1</code></li>
+</ul>
+<h4 id="滑动窗口最大值（队列）"><a href="#滑动窗口最大值（队列）" class="headerlink" title="滑动窗口最大值（队列）"></a>滑动窗口最大值（队列）</h4><p><a href="https://leetcode-cn.com/problems/hua-dong-chuang-kou-de-zui-da-zhi-lcof/" target="_blank" rel="noopener">【题目】</a></p>
+<p>给定一个数组 nums 和滑动窗口的大小 k，请找出所有滑动窗口里的最大值。</p>
+<p>【思路】</p>
+<p><strong>本题难点</strong>：如何在每次窗口滑动后，将“获取窗口内最大值”的复杂度从<code>O(k)</code>降到<code>O(1)</code></p>
+<p>【双端队列】</p>
+<ul>
+<li>双端队列，就是两端都可以出队、入队的队列。</li>
+<li>双端队列deque 存放每个元素的下标；</li>
+<li>循环遍历nums所有元素，其中</li>
+<li><ul>
+<li>为了保持队头是最大值的下标：若遇到个比队尾更大的元素，则移除队尾。直到队列中所有元素不小于<code>nums[i]</code>或队列为空（即维护单调减的队列）。</li>
+</ul>
+</li>
+<li><ul>
+<li>判断队头是否过期：用<code>if</code>判断下标值是否出当前窗口。</li>
+</ul>
+</li>
+</ul>
+<h4 id="基本计算器Ⅱ-栈"><a href="#基本计算器Ⅱ-栈" class="headerlink" title="基本计算器Ⅱ (栈)"></a>基本计算器Ⅱ (栈)</h4><p><a href="https://leetcode-cn.com/problems/basic-calculator-ii/" target="_blank" rel="noopener">【题目】</a></p>
+<p>【思路】</p>
+<p>几大要点：</p>
+<ol>
+<li>遍历每个字符。判断是数字？则将数字字符转化成int数字。注意单个数字为一个字符，一个数值可能由多个数字字符组成：<code>num = num * 10 + (c - &#39;0&#39;);</code></li>
+<li>如何进行“加减乘除”运算？<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">if ( (!isdigit(c) &amp;&amp; c !&#x3D; &#39; &#39;)|| i &#x3D;&#x3D; s.size() -1 )&#123;    &#x2F;&#x2F;加入c !&#x3D; &#39; &#39;，排除空格</span><br><span class="line">    &#x2F;&#x2F;sign是字符c前一个字符</span><br><span class="line">    int pre &#x3D; nums.top();</span><br><span class="line">    switch (sign)&#123;</span><br><span class="line">        case &#39;+&#39;:</span><br><span class="line">            nums.push(num);</span><br><span class="line">            break;</span><br><span class="line">        case &#39;-&#39;:</span><br><span class="line">            nums.push(-num);</span><br><span class="line">            break;</span><br><span class="line">        case &#39;*&#39;:</span><br><span class="line">            pre &#x3D; nums.top();   &#x2F;&#x2F;pre 不能在前面声明处就取出栈顶，因为空栈</span><br><span class="line">            nums.pop();     &#x2F;&#x2F;栈顶要取出</span><br><span class="line">            nums.push(pre * num);</span><br><span class="line">            break;</span><br><span class="line">        case &#39;&#x2F;&#39;:</span><br><span class="line">            pre &#x3D; nums.top();</span><br><span class="line">            nums.pop();</span><br><span class="line">            nums.push(pre &#x2F; num);</span><br><span class="line">            break;   </span><br><span class="line">    &#125;</span><br><span class="line">    sign &#x3D; c;   &#x2F;&#x2F;</span><br><span class="line">    num &#x3D; 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+其中nums是一个<strong>栈(stack)</strong>，用以存放当前递归算式中加上运算符后的数字。  </li>
+</ol>
+<ul>
+<li>如何计算结果？<br>将当前栈中所有数字相加：在递归结束时返回求和结果<code>res</code>：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">while( !nums.empty())&#123;</span><br><span class="line">    res +&#x3D; nums.top();</span><br><span class="line">    nums.pop();</span><br><span class="line">&#125;</span><br><span class="line">return res;</span><br></pre></td></tr></table></figure></li>
+<li>如何处理空格？<br>加入<code>(!isdigit(c) &amp;&amp; c != &#39; &#39;)</code></li>
+</ul>
+<ol start="3">
+<li>如何处理括号？将括号中的算式看作一个整体“数字”，用递归计算。遇到’(‘开始递归，遇到’)’结束递归</li>
+</ol>
+<h4 id="扁平化嵌套列表迭代器（栈）"><a href="#扁平化嵌套列表迭代器（栈）" class="headerlink" title="扁平化嵌套列表迭代器（栈）"></a>扁平化嵌套列表迭代器（栈）</h4><p><a href="https://leetcode-cn.com/problems/flatten-nested-list-iterator/" target="_blank" rel="noopener">【题目】</a></p>
+<p>输入: [[1,1],2,[1,1]]</p>
+<p>输出: [1,1,2,1,1]</p>
+<p>【思路】</p>
+<ol>
+<li>栈的做法</li>
+</ol>
+<ul>
+<li>为什么用到栈？  </li>
+</ul>
+<p><strong>将nestedList中嵌套对象中的元素也插入栈中。</strong></p>
+<p>也可以不用。用栈就要用到<strong>反向遍历</strong>(反向迭代器)</p>
+<p>栈存放的是NestedInteger对象，每个NestedInteger对象可能是单个int，也可能是一个嵌套列表，需要判断。</p>
+<ul>
+<li>构造函数：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NestedIterator(vector&lt;NestedInteger&gt; &amp;nestedList) &#123; &#x2F;&#x2F;反向迭代器reverse_iterator：从最后一个元素到第一个元素遍历容器</span><br><span class="line">    for (vector&lt;NestedInteger&gt;::reverse_iterator iter &#x3D; nestedList.rbegin(); iter !&#x3D; nestedList.rend(); ++iter)&#123;</span><br><span class="line">        st.push(*iter); &#x2F;&#x2F;将NestedInteger对象插入栈</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>next()函数 返回栈中的int数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int next() &#123;</span><br><span class="line">    NestedInteger t &#x3D; st.top();</span><br><span class="line">    st.pop();</span><br><span class="line">    return t.getInteger();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>hasNext()函数，判断是否到nestedList的末端</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">bool hasNext() &#123;</span><br><span class="line">    &#x2F;&#x2F;将嵌套列表对象中的元素也插入栈中。</span><br><span class="line">    while(!st.empty())&#123;</span><br><span class="line">        NestedInteger cur &#x3D; st.top();</span><br><span class="line">        if(cur.isInteger())</span><br><span class="line">            return true;</span><br><span class="line">        &#x2F;&#x2F;否则当前对象就是个嵌套列表</span><br><span class="line">        st.pop();</span><br><span class="line">        vector&lt;NestedInteger&gt; curList &#x3D; cur.getList();</span><br><span class="line">        for (auto iter &#x3D; curList.rbegin(); iter !&#x3D; curList.rend(); ++iter)&#123;</span><br><span class="line">            st.push(*iter);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;   &#x2F;&#x2F;全空了</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>用数组v存放所有数字</li>
+</ol>
+<p>在构造函数中将所有数字插入数组。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">private:</span><br><span class="line">    vector&lt;int&gt; v;</span><br><span class="line">    int ind &#x3D; 0;</span><br><span class="line">public:</span><br><span class="line">    NestedIterator(vector&lt;NestedInteger&gt; &amp;nestedList) &#123;</span><br><span class="line">        for(vector&lt;NestedInteger&gt;::iterator iter &#x3D; nestedList.begin(); iter !&#x3D; nestedList.end(); ++iter)&#123;</span><br><span class="line">            insert(*iter);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    void insert(NestedInteger &amp;i)&#123;</span><br><span class="line">        if(i.isInteger())</span><br><span class="line">            v.push_back(i.getInteger());</span><br><span class="line">        else&#123;</span><br><span class="line">            vector&lt;NestedInteger&gt; curList &#x3D; i.getList();</span><br><span class="line">            for(auto iter &#x3D; curList.begin(); iter !&#x3D; curList.end(); ++iter)&#123;</span><br><span class="line">                insert(*iter);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="逆波兰表达式求值（栈）"><a href="#逆波兰表达式求值（栈）" class="headerlink" title="逆波兰表达式求值（栈）"></a>逆波兰表达式求值（栈）</h4><p><a href="https://leetcode-cn.com/problems/evaluate-reverse-polish-notation/" target="_blank" rel="noopener">【题目】</a></p>
+<ul>
+<li><strong>逆波兰式</strong>，也叫<strong>后缀表达式</strong></li>
+</ul>
+<p>我们平时写a+b，这是中缀表达式，写成后缀表达式就是：ab+。</p>
+<p>后缀表达式计算机易懂，因为内存结构是栈式（先进后出）。</p>
+<p>【思路】</p>
+<p><img src="https://pic.leetcode-cn.com/0d37e629733b94611e6412fb24c1a032d7230d86d9c2ae80d8d2aebb3e3f18c3-image.png" alt="image"></p>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><h3 id="题目-7"><a href="#题目-7" class="headerlink" title="题目"></a>题目</h3><h4 id="复制带随机指针的链表"><a href="#复制带随机指针的链表" class="headerlink" title="复制带随机指针的链表"></a>复制带随机指针的链表</h4><p><a href="https://leetcode-cn.com/problems/copy-list-with-random-pointer/" target="_blank" rel="noopener">【题目138】</a></p>
+<p>给定一个链表，每个节点包含一个额外增加的随机指针，该指针可以指向链表中的任何节点或空节点。</p>
+<p>要求返回这个链表的 深拷贝。</p>
+<p>【思路】</p>
+<p>方法一：使用hashmap</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Node* copyRandomList(Node* head)&#123;</span><br><span class="line">    if (head &#x3D;&#x3D; nullptr)</span><br><span class="line">        return head;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;遍历原链表 创建新链表节点并建立映射关系</span><br><span class="line">    unordered_map&lt;Node*, Node*&gt; map; &#x2F;&#x2F;&lt;原链表节点，对应位置的新链表节点&gt;</span><br><span class="line"></span><br><span class="line">    Node* cur &#x3D; head;</span><br><span class="line">    while (cur)</span><br><span class="line">    &#123;</span><br><span class="line">        map[cur] &#x3D; new Node(cur-&gt;val);</span><br><span class="line">        cur &#x3D; cur-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;遍历原链表 根据map链接新链表</span><br><span class="line">    cur &#x3D; head;</span><br><span class="line">    while (cur)</span><br><span class="line">    &#123;</span><br><span class="line">        Node* node &#x3D; map[cur];</span><br><span class="line">        node-&gt;next &#x3D; map[cur-&gt;next];</span><br><span class="line">        node-&gt;random &#x3D; map[cur-&gt;random];</span><br><span class="line">        cur &#x3D; cur-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return map[head];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="排序链表"><a href="#排序链表" class="headerlink" title="排序链表"></a>排序链表</h4><ul>
+<li>归并排序：包括  <ul>
+<li>切开cut：一个while循环切开两段长度为size的链表出来，循环直到链表全部切完。全部切开后进行归并。</li>
+<li>双路归并merger：一个while循环中合并两个链表得到一个升序链表。（l1、l1是两个链表的头节点）</li>
+<li>用哑节点dummy来索引一个链表。</li>
+</ul>
+</li>
+</ul>
+<h4 id="回文链表"><a href="#回文链表" class="headerlink" title="回文链表"></a>回文链表</h4><p>输入: 1-&gt;2-&gt;2-&gt;1</p>
+<p>输出: true</p>
+<p>【思路】</p>
+<p>用快慢指针：</p>
+<ul>
+<li>用快慢指针遍历的<strong>同时翻转</strong>前半部分<ul>
+<li>用快慢指针遍历（两指针都从头节点开始），可以将链表分成两部分：<br><code>@-&gt;@-&gt;(slow)@-&gt;@-&gt;(fast)null</code></li>
+<li>快慢指针每移动一次,就将慢指针的<code>next</code>指向前节点（反转）：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">p-&gt;next &#x3D; pre;  &#x2F;&#x2F;翻转</span><br><span class="line">pre &#x3D; p;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>然后与后半部分比较即可:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">while(p)&#123;       &#x2F;&#x2F;前半部分和后半部分比较</span><br><span class="line">    if(p-&gt;val !&#x3D; slow-&gt;val)</span><br><span class="line">        return 0;</span><br><span class="line">    p &#x3D; p-&gt;next;</span><br><span class="line">    slow &#x3D; slow-&gt;next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="LRU缓存机制"><a href="#LRU缓存机制" class="headerlink" title="LRU缓存机制"></a>LRU缓存机制</h2><p>LRU是一种缓存淘汰策略。解决缓存满时，怎么删除内容来给新内容腾位置。</p>
+<p>LRU 的全称是 Least Recently Used，也就是说我们认为最近使用过的数据应该是是「有用的」，很久都没用过的数据应该是无用的，内存满了就优先删那些<strong>很久没用过的数据</strong>。</p>
+<h3 id="题目-8"><a href="#题目-8" class="headerlink" title="题目"></a>题目</h3><h4 id="146-LRU缓存机制-（双向链表）"><a href="#146-LRU缓存机制-（双向链表）" class="headerlink" title="146.LRU缓存机制    （双向链表）"></a>146.LRU缓存机制    （双向链表）</h4><p>【题目】</p>
+<p>设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作： 获取数据 get 和 写入数据 put 。</p>
+<p>获取数据 get(key) - 如果关键字 (key) 存在于缓存中，则获取关键字的值（总是正数），否则返回 -1。</p>
+<p>写入数据 put(key, value) - 如果关键字已经存在，则变更其数据值；如果关键字不存在，则插入该组「关键字/值」。当缓存容量达到上限时，它应该在写入新数据之前删除最久未使用的数据值，从而为新的数据值留出空间。</p>
+<p>【思路】：</p>
+<p>利用<strong>哈希表+ 双向链表</strong>，面试时问到这题，一般都需要写一个简单的双向链表。</p>
+<ul>
+<li>用哈希表：因为题目要求输入的数据包含关键字和键值：写入数据 put(key, value)</li>
+<li>双向链表：为了实现优先删除很久没用过的数据。<ul>
+<li>使用一个伪头部（dummy head）和伪尾部（dummy tail）<strong>标记界限</strong>，这样在添加节点和删除节点的时候，只需要通过伪头部、伪尾部<strong>定位</strong>添加/删除的位置（头部/尾部），而不用遍历整个链表。</li>
+<li>双向链表每个节点有两个对象指针<code>DLinkNode* prev, * next</code>表示两个方向。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://assets.leetcode-cn.com/solution-static/146/2.PNG" alt="image"></p>
+<p>解法：</p>
+<ul>
+<li>对于<code>get</code>操作，判断<code>key</code>是否存在：<ul>
+<li>若不存在，返回-1；</li>
+<li>若存在，则<code>key</code>对应的节点为最近使用的节点。于是通过哈希表定位到该节点在双向链表中的位置，并将其移动到双向链表的头部（dummy head），最后返回该点的值。</li>
+</ul>
+</li>
+<li>对于<code>put</code>操作，先判断<code>key</code>是否存在：<ul>
+<li>若不存在，则使用<code>key</code>和<code>value</code>创建一个新的节点，插到双向链表的头部，并将<code>key</code>和<strong>该节点</strong>添加到哈希表。然后判断双向链表节点数是否超过容量：若超过，则删除双向链表<strong>尾部节点</strong>，及哈希表对应的项。</li>
+<li>若存在，则与<code>get</code>类似，先通过哈希表定位，再将对应的节点值更新为<code>value</code>，并移动节点到双向链表头部。</li>
+</ul>
+</li>
+</ul>
+<p>上述各项操作中，访问哈希表的时间复杂度为 O(1)O(1)，在双向链表的头部添加节点、在双向链表的尾部删除节点的复杂度也为 O(1)O(1)。而将一个节点移到双向链表的头部，可以分成「删除该节点」和「在双向链表的头部添加节点」两步操作，都可以在 O(1)O(1) 时间内完成。</p>
+</div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2020/09/11/sort_sum/"><img class="prev_cover" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">排序算法总结</div></div></a></div><div class="next-post pull_right"><a href="/2020/09/05/blog_create/"><img class="next_cover" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">blog_create</div></div></a></div></nav></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By feng</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">簡</a><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script id="canvas_nest" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="/js/third-party/canvas-nest.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script></body></html>
